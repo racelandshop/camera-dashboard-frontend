@@ -1,0 +1,41 @@
+How will I load the css from the themes into this?
+
+### Overall
+
+Add type hints for camera types
+Try aspecto with other screens (Is there a need to adapt it to small screens?)
+REview CSS (there are some place where the px measure might need to be switched to percentages)
+Add rounded edges for all the cards
+Make Sure I pass hass for all the elements (? might not be necessary but it good practice)
+When I click +camera it take a while for the first dialog to appear. Why?
+On dialog if I press 'esc' I can not reopen the dialogs
+
+### In main
+
+- The search bar can be used to search for more stuff in the camera information (disccus at the end)
+- There is a weird flicker in the main menu due to bar on the left appearing and disapearing when I turn on the timer
+
+## In raceland camera card
+
+- The menu is supposed to appear at the top. Center the text in the div (the css does not seem to be working)
+- the pointer css propetry is useless?
+
+## In the select brand dialog
+
+- Fetch local items
+- Dinamic text size with css depending on the lenght?
+
+## In the new-camera-card
+
+- Also highligh text upon hover
+
+## In open model dialog
+
+- Fail safe when there is not models for that camera brand in the databse
+
+## In formulary
+
+- Close button does not work on the formulary dialog for some reason
+- Integration type -> Use SVG icon in before the selector
+- Icons in record Video of camera and more options are not appearing
+- Advanced Options for custom camera

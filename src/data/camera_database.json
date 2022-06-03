@@ -1,0 +1,32 @@
+{"Manufacturer": [
+  {"name": "Hikvision", "models": [
+    {"version": 0, "options": {
+      "FFMPEG": {"prefix": "rtsp://", "Source": "FFMPEG", "url": "/Streaming/Channels/101", "supportChannels": "true"}
+      }
+    },
+    {"version": "1080P", "options": {
+      "JPEG": {"prefix": "http://", "Source": "JPEG", "url": "tmpfs/auto.jpg", "supportChannels": "False"},
+      "FFMPEG": {"prefix": "rtsp://", "Source": "FFMPEG", "url": "/Streaming/Channels/101", "supportChannels": "true"}
+      }
+    },
+    {"version": 1111, "options": {
+      "FFMPEG": {"prefix": "rtsp://", "Source": "FFMPEG", "url": "/user=admin_password=tlJwpbo6_channel=1_stream=0.sdp", "supportChannels": "true"}
+      }
+    },
+    {"version": "16CH-TVI", "options": {
+      "FFMPEG": {"prefix": "rtsp://", "Source": "FFMPEG", "url": "/Streaming/Channels/101", "supportChannels": "true"}
+      }
+    }
+  ]},
+  {"name": "Logitech", "models": [
+    {"version": 5050, "options": {
+      "MJPEG": {"prefix": "http://", "Source": "MJPEG", "url": "video.mjpg", "supportChannels": "False"}
+      }
+    },
+    {"version": 525, "options": {
+      "VLC": {"prefix": "http://", "Source": "VLC", "url": "/control/faststream.jpg?stream=MxPEG&needlength&fps=6", "supportChannels": "False"},
+      "MJPEG": {"prefix": "http://", "Source": "MJPEG", "url": "videofeed", "supportChannels": "False"}
+      }
+    }
+  ]}
+]}

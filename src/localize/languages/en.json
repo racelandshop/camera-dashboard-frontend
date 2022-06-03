@@ -1,0 +1,26 @@
+{
+  "common": {
+    "camera": "camera",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "add_camera": "Add camera",
+    "custom_camera": "Custom Camera",
+    "go_back": "Back"
+  },
+  "search":{
+    "cameras": "Search cameras",
+    "brands": "Search Brands",
+    "models": "Search Models"
+  },
+  "form": {
+    "integration": "Select type of Integration",
+    "camera_name": "Camera Name (Obligatory)",
+    "static_image_url": "Static Image URL",
+    "stream_url": "Stream URL",
+    "username": "Username",
+    "password": "Password",
+    "record_video_of_camera": "Record Video of Camera",
+    "ip": "IP"
+  }
+}
