@@ -54,11 +54,11 @@ jobs:
         run: |
           export version=${{ github.ref }}
           sed -i "s|main|${version##*/}|" ./setup.py
-          sed -i "s|main|${version##*/}|" ./hacs_frontend/version.py
+          sed -i "s|main|${version##*/}|" ./cameras_dashboard/version.py
           sed -i "s|main|${version##*/}|" ./src/version.ts
 
           cat ./setup.py
-          cat ./hacs_frontend/version.py
+          cat ./cameras_dashboard/version.py
           cat ./src/version.ts
 
       - name: Install dependencies

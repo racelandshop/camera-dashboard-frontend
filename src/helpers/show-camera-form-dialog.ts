@@ -16,7 +16,7 @@ export const showCameraDialog = (
   cameraFormDialogParams: CameraFormsDialogParams
 ): void => {
   fireEvent(element, "show-dialog", {
-    dialogTag: "add-camera-formulary",
+    dialogTag: "raceland-formulary",
     dialogImport: importCameraFormDialog,
     dialogParams: cameraFormDialogParams,
   });

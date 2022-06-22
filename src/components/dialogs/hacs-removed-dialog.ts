@@ -6,7 +6,6 @@ import {
   fetchResources,
   getRemovedRepositories,
   repositoryIgnore,
-  repositoryUninstall,
 } from "../../data/websocket";
 import { HacsStyles } from "../../styles/hacs-common-style";
 import "./hacs-dialog";
@@ -110,7 +109,6 @@ export class HacsRemovedDialog extends HacsDialogBase {
           deleteResource(this.hass, String(resource.id));
         });
     }
-    await repositoryUninstall(this.hass, this.repository.id);
     this._updating = false;
     this.active = false;
   }

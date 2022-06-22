@@ -10,6 +10,16 @@ import {
   HacsDispatchEvent,
 } from "./common";
 
+import { CameraConfiguration } from "./types";
+
+export const sendCameraInformation = async (hass: HomeAssistant, cameraInfo) => {
+  const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
+    type: "raceland-camera-dashboard/register_camera",
+    ...cameraInfo,
+  });
+  return response;
+};
+
 export const getConfiguration = async (hass: HomeAssistant) => {
   const response = await hass.connection.sendMessagePromise<Configuration>({
     type: "hacs/config",
@@ -49,14 +59,6 @@ export const repositoryInstall = async (hass: HomeAssistant, repository: string)
   await hass.connection.sendMessagePromise<void>({
     type: "hacs/repository",
     action: "install",
-    repository: repository,
-  });
-};
-
-export const repositoryUninstall = async (hass: HomeAssistant, repository: string) => {
-  return await hass.connection.sendMessagePromise<void>({
-    type: "hacs/repository",
-    action: "uninstall",
     repository: repository,
   });
 };

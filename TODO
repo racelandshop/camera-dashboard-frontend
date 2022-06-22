@@ -39,3 +39,4 @@ On dialog if I press 'esc' I can not reopen the dialogs
 - Integration type -> Use SVG icon in before the selector
 - Icons in record Video of camera and more options are not appearing
 - Advanced Options for custom camera
+- In the autocomplete camera form (when picking one camera model, add information about the default 'door' i.e what comes after :). Also, if the IP has a 'door' ignore this parameter.

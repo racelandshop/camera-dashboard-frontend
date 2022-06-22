@@ -3,9 +3,9 @@ package-lock.json
 build
 src/localize/generated.ts
 !script/build
-hacs_frontend/*.js
-hacs_frontend/*.json
-hacs_frontend/*.js.gz
-!hacs_frontend/*.py
+cameras_dashboard/*.js
+cameras_dashboard/*.json
+cameras_dashboard/*.js.gz
+!cameras_dashboard/*.py
 
 yarn-error.log

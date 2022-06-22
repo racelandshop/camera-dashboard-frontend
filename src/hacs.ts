@@ -7,7 +7,7 @@ import { HacsLogger } from "./tools/hacs-logger";
 import { localize } from "./localize/localize";
 import { ProvideHassLitMixin } from "../homeassistant-frontend/src/mixins/provide-hass-lit-mixin";
 
-export class HacsElement extends ProvideHassLitMixin(LitElement) {
+export class cameraDashboardElement extends ProvideHassLitMixin(LitElement) {
   @property({ attribute: false }) public hacs!: Hacs;
 
   public connectedCallback() {

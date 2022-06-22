@@ -25,7 +25,6 @@ import {
   deleteResource,
   fetchResources,
   repositorySetNotNew,
-  repositoryUninstall,
   repositoryUpdate,
 } from "../data/websocket";
 import { HacsStyles } from "../styles/hacs-common-style";
@@ -305,7 +304,6 @@ export class HacsRepositoryCard extends LitElement {
           .map((resource) => deleteResource(this.hass, String(resource.id)))
       );
     }
-    await repositoryUninstall(this.hass, this.repository.id);
   }
 
   static get styles(): CSSResultGroup {

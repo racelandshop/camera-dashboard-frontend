@@ -1,8 +1,8 @@
 {
   "name": "hacs-frontend",
-  "description": "Frontend of HACS",
+  "description": "Frontend of the camera dashboard used in the raceland fork of homeassistant",
   "source": "src/main.ts",
-  "main": "hacs_frontend/entrypoint.js",
+  "main": "cameras_dashboard/entrypoint.js",
   "scripts": {
     "postinstall": "patch-package",
     "start": "./script/develop",
@@ -10,12 +10,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hacs/frontend.git"
+    "url": "git+https://github.com/racelandshop/camera-dashboard-frontend"
   },
   "bugs": {
-    "url": "https://github.com/hacs/integration/issues"
+    "url": "https://github.com/racelandshop/camera-dashboard-frontend/issues"
   },
-  "homepage": "https://hacs.xyz/",
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/plugin-external-helpers": "^7.14.5",

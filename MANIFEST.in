@@ -1,2 +1,2 @@
-graft hacs_frontend
+graft cameras_dashboard
 global-exclude *.py[cod]

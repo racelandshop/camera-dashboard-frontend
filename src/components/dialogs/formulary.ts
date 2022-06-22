@@ -19,8 +19,9 @@ import { CameraFormsDialogParams } from "../../helpers/show-camera-form-dialog";
 import { cameraModel, backEventOptions, schemaForm } from "../../data/types";
 import "../camera-model-icon-button";
 import { localize } from "../../localize/localize";
+import { sendCameraInformation } from "../../data/websocket";
 
-@customElement("add-camera-formulary")
+@customElement("raceland-formulary")
 export class HuiCreateDialogCameraFormulary
   extends LitElement
   implements HassDialog<CameraFormsDialogParams>
@@ -111,10 +112,18 @@ export class HuiCreateDialogCameraFormulary
     this.data = { ...this.data, ...config };
   }
 
-  private accept() {
-    console.log("Add camera not yet implemented, but this is the data being passed through");
-    console.log(this.data);
+  private _cancel(ev?: Event) {
+    if (ev) {
+      ev.stopPropagation();
+    }
     this.closeDialog();
+  }
+
+  private accept() {
+    const response = sendCameraInformation(this.hass, this.data);
+    console.log("The response is... ", response);
+
+    //this.closeDialog();
   }
 
   private goBack(ev) {
@@ -124,14 +133,6 @@ export class HuiCreateDialogCameraFormulary
     //   ev.stopPropagation();
     // }
     // this.closeDialog();
-  }
-
-  private _cancel(ev: Event) {
-    console.log("Running cancel");
-    if (ev) {
-      ev.stopPropagation();
-    }
-    this.closeDialog();
   }
 
   static get styles(): CSSResultGroup {
@@ -261,6 +262,6 @@ export class HuiCreateDialogCameraFormulary
 
 declare global {
   interface HTMLElementTagNameMap {
-    "add-camera-formulary": HuiCreateDialogCameraFormulary;
+    "raceland-formulary": HuiCreateDialogCameraFormulary;
   }
 }

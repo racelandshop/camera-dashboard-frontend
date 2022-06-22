@@ -27,9 +27,15 @@ import {
 import type { HaFormSchema } from "./../homeassistant-frontend/src/components/ha-form/types";
 import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
-import { HacsElement } from "./hacs";
+import { cameraDashboardElement } from "./hacs";
 import "./hacs-router";
-import { cameraCard, cameraModel, backEventOptions, schemaForm } from "./data/types";
+import {
+  cameraCard,
+  cameraModel,
+  backEventOptions,
+  schemaForm,
+  OpenDialogCameraForm,
+} from "./data/types";
 import { showCreateCameraDialog } from "./helpers/show-create-camera-dialog";
 import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog ";
 import { showModelOptionsDialog } from "./helpers/show-camera-models-dialog";
@@ -38,6 +44,7 @@ import { showCameraDialog } from "./helpers/show-camera-form-dialog";
 // import { hacsStyleVariables } from "./styles/variables";
 import cameraDatabase from "./data/camera_database.json";
 import { localize } from "./localize/localize";
+import { getCameraEntities } from "./common";
 
 declare global {
   // for fire event
@@ -56,8 +63,8 @@ declare global {
   }
 }
 
-@customElement("hacs-frontend")
-class cameraFrontend extends HacsElement {
+@customElement("cameras-dashboard")
+class cameraFrontend extends cameraDashboardElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
 
   @property({ attribute: false }) public narrow!: boolean;
@@ -66,19 +73,10 @@ class cameraFrontend extends HacsElement {
 
   @state() private _filter = "";
 
-  // @query("#hacs-dialog") private _hacsDialog?: any;
-
-  // @query("#hacs-dialog-secondary") private _hacsDialogSecondary?: any;
-
   protected firstUpdated(changedProps) {
     super.firstUpdated(changedProps);
 
     this._applyTheme();
-
-    this.hacs.language = this.hass.language;
-    this.addEventListener("hacs-location-changed", (e) =>
-      this._setRoute(e as LocationChangedEvent)
-    );
 
     this.addEventListener("add-new-camera", () => {
       showCreateCameraDialog(this, { database: cameraDatabase });
@@ -234,21 +232,11 @@ class cameraFrontend extends HacsElement {
       return html``;
     }
 
-    // let dummie_camera_info = [
-    //   { name: "Raceland 2" },
-    //   { name: "Raceland 3" },
-    //   { name: "Raceland 1" },
-    //   { name: "Test 4" },
-    //   { name: "Test 5" },
-    //   { name: "Test 6" },
-    //   { name: "Marca 1 camera 1" },
-    //   { name: "Marca 1 camera 2" },
-    //   { name: "Marca 2 camera 1" },
-    // ]; //For testing purposes, list of camera avaiable in the
+    let registeredCameras = getCameraEntities(this.hass.states);
 
-    let dummie_camera_info = [];
+    //let registeredCameras = [];
 
-    dummie_camera_info = this._filterCameras(dummie_camera_info, this._filter);
+    registeredCameras = this._filterCameras(registeredCameras, this._filter);
 
     return html`
       <search-input
@@ -260,9 +248,9 @@ class cameraFrontend extends HacsElement {
       <div class="sep"></div>
 
       <div class="camera-list">
-        ${dummie_camera_info.length === 0
+        ${registeredCameras.length === 0
           ? html`<new-camera-card .hass=${this.hass} .narrow=${this.narrow}> </new-camera-card>`
-          : dummie_camera_info.map(
+          : registeredCameras.map(
               (cam_info) =>
                 html` <raceland-camera-card
                   .hass=${this.hass}
@@ -272,7 +260,7 @@ class cameraFrontend extends HacsElement {
                 ></raceland-camera-card>`
             )}
       </div>
-      ${dummie_camera_info.length === 0
+      ${registeredCameras.length === 0
         ? html``
         : html`<ha-fab .label=${localize("common.camera")} extended @click=${this._addCamera} })}>
             <ha-svg-icon slot="icon" .path=${mdiPlus}></ha-svg-icon>

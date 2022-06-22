@@ -49,6 +49,7 @@ export class newCameraCard extends LitElement {
           height: 100%;
           font-size: 1.2rem;
         }
+
         .new-camera-icon {
           width: 60%;
           height: 60%;
@@ -62,11 +63,6 @@ export class newCameraCard extends LitElement {
           width: 60%;
           height: 60%;
           margin-top: 20px;
-          cursor: pointer;
-        }
-
-        .new-camera:hover {
-          color: #8660e0;
           cursor: pointer;
         }
 

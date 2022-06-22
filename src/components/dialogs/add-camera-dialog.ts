@@ -18,7 +18,6 @@ import { cameraBrand, cameraModel } from "../../data/types";
 import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
 import "../camera-brand-icon-button";
 import { localize } from "../../localize/localize";
-import { schemaForm } from "../../data/types";
 
 @customElement("add-camera-dialog")
 export class HuiCreateDialogCamera
@@ -41,7 +40,7 @@ export class HuiCreateDialogCamera
   public closeDialog(): boolean {
     this._cameraDatabase = undefined;
     this._currTabIndex = 0;
-    // this._selectedEntities = [];
+    console.log("this", this.localName);
     fireEvent(this, "dialog-closed", { dialog: this.localName });
     return true;
   }
@@ -158,16 +157,16 @@ export class HuiCreateDialogCamera
   }
 
   private _openCameraBrandDialog(cameraModelsList) {
+    this.closeDialog();
     fireEvent(this, "open-camera-brand-dialog", {
       modelsInfo: cameraModelsList,
     });
-    this.closeDialog();
   }
 
   private _addCustomCamera(ev) {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: this._customSchema(["generic", "MPJEG"]),
+      body: this._customSchema(["generic", "FFMPEG"]),
       footer: {
         back: localize("common.go_back"),
         accept: localize("common.add_camera"),

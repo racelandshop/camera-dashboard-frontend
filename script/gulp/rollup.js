@@ -60,7 +60,7 @@ const DevelopPlugins = [
       path.resolve("./homeassistant-frontend/src/components/ha-icon-picker.ts"),
     ],
   }),
-  entrypointHashmanifest({ manifestName: "./hacs_frontend/manifest.json" }),
+  entrypointHashmanifest({ manifestName: "./cameras_dashboard/manifest.json" }),
 ];
 
 const BuildPlugins = DevelopPlugins.concat([
@@ -76,7 +76,7 @@ const inputconfig = {
 };
 const outputconfig = (isDev) => {
   return {
-    dir: "./hacs_frontend/",
+    dir: "./cameras_dashboard/",
     chunkFileNames: !isDev ? "c.[hash].js" : "[name]-dev.js",
     assetFileNames: !isDev ? "a.[hash].js" : "[name]-dev.js",
     entryFileNames: !isDev ? "[name]-[hash].js" : "[name]-dev.js",
@@ -90,7 +90,7 @@ const outputconfig = (isDev) => {
 function createServer() {
   const server = http.createServer((request, response) => {
     return handler(request, response, {
-      public: "./hacs_frontend/",
+      public: "./cameras_dashboard/",
     });
   });
 
@@ -153,9 +153,9 @@ gulp.task("compress", function compressApp() {
 });
 
 function writeEntrypoint() {
-  const entrypointManifest = require(path.resolve("./hacs_frontend/manifest.json"));
+  const entrypointManifest = require(path.resolve("./cameras_dashboard/manifest.json"));
   fs.writeFileSync(
-    path.resolve("./hacs_frontend/entrypoint.js"),
+    path.resolve("./cameras_dashboard/entrypoint.js"),
     `
 try {
   new Function("import('/hacsfiles/frontend/${entrypointManifest["./src/main.ts"]}')")();
