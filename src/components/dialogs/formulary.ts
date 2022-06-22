@@ -20,6 +20,7 @@ import { cameraModel, backEventOptions, schemaForm } from "../../data/types";
 import "../camera-model-icon-button";
 import { localize } from "../../localize/localize";
 import { sendCameraInformation } from "../../data/websocket";
+import { none } from "@lit-labs/motion";
 
 @customElement("raceland-formulary")
 export class HuiCreateDialogCameraFormulary
@@ -55,6 +56,7 @@ export class HuiCreateDialogCameraFormulary
 
   public closeDialog(): boolean {
     this._currTabIndex = 0;
+    this.schema = undefined;
     fireEvent(this, "dialog-closed", { dialog: this.localName });
     return true;
   }
@@ -91,7 +93,7 @@ export class HuiCreateDialogCameraFormulary
           ></ha-form>
         </div>
         <div class="options">
-          <mwc-button class="button-confirm" @click=${this.accept}
+          <mwc-button class="button-confirm" @click=${this._accept}
             >${this.schema.footer.accept}</mwc-button
           >
           <mwc-button class="button-back" @click=${this.goBack}
@@ -119,11 +121,11 @@ export class HuiCreateDialogCameraFormulary
     this.closeDialog();
   }
 
-  private accept() {
+  private _accept() {
+    //Add type checks
     const response = sendCameraInformation(this.hass, this.data);
     console.log("The response is... ", response);
-
-    //this.closeDialog();
+    this.closeDialog();
   }
 
   private goBack(ev) {
