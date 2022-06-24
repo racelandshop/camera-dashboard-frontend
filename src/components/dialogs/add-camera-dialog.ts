@@ -34,13 +34,11 @@ export class HuiCreateDialogCamera
 
   public async showDialog(params: CreateCameraDialogParams): Promise<void> {
     this._cameraDatabase = params.database.Manufacturer;
-    console.log(this._cameraDatabase);
   }
 
   public closeDialog(): boolean {
     this._cameraDatabase = undefined;
     this._currTabIndex = 0;
-    console.log("this", this.localName);
     fireEvent(this, "dialog-closed", { dialog: this.localName });
     return true;
   }
@@ -98,8 +96,50 @@ export class HuiCreateDialogCamera
       ],
     },
     { name: "record_video_of_camera", selector: { boolean: {} } },
-    // { name: "Advanced Options", selector: { boolean: {} } },
+    { name: "advanced_options", selector: { boolean: {} } },
   ]);
+
+  private _customCameraExtraOptionSchema = [
+    {
+      name: "select_authetication",
+      selector: {
+        select: {
+          options: ["Basic", "Digest"],
+          mode: "dropdown",
+        },
+      },
+    },
+    {
+      name: "verify_ssl",
+      selector: {
+        select: {
+          options: ["True", "False"],
+          mode: "dropdown",
+        },
+      },
+    },
+    {
+      name: "select_rtsp_transport",
+      selector: {
+        select: {
+          options: ["TCP", "Option2"],
+          mode: "dropdown",
+        },
+      },
+    },
+    {
+      name: "framerate",
+      selector: {
+        number: {
+          min: 1,
+          max: 60,
+          step: 1,
+          mode: "slider",
+          unit_of_measurement: "FPS",
+        },
+      },
+    },
+  ];
 
   protected render(): TemplateResult {
     if (!this._cameraDatabase) {
@@ -167,6 +207,7 @@ export class HuiCreateDialogCamera
     const form_schema = {
       header: { title: localize("common.add_camera") },
       body: this._customSchema(["generic", "FFMPEG"]),
+      extra_options: this._customCameraExtraOptionSchema,
       footer: {
         back: localize("common.go_back"),
         accept: localize("common.add_camera"),
@@ -176,8 +217,8 @@ export class HuiCreateDialogCamera
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: {} as cameraModel,
       schema: form_schema,
-      back: true,
-      event: { event_name: "add-new-camera", data: this._cameraDatabase },
+      data: {},
+      backEvent: { event_name: "add-new-camera", data: this._cameraDatabase },
     });
     this.closeDialog();
   }
@@ -192,10 +233,6 @@ export class HuiCreateDialogCamera
       ev.stopPropagation();
     }
     this.closeDialog();
-  }
-
-  private _ignoreKeydown(ev: KeyboardEvent) {
-    ev.stopPropagation();
   }
 
   static get styles(): CSSResultGroup {

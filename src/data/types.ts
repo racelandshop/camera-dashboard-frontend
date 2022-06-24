@@ -1,4 +1,3 @@
-import { localize } from "../localize/localize";
 import type { HaFormSchema } from "./../homeassistant-frontend/src/components/ha-form/types";
 
 export interface cameraCard {
@@ -31,6 +30,7 @@ export interface backEventOptions {
 export interface schemaForm {
   header: { title: string };
   body: HaFormSchema[];
+  extra_options: HaFormSchema[];
   footer: {
     back: string;
     accept: string;
@@ -45,4 +45,10 @@ export interface CameraConfiguration {
   username?: string;
   password?: string;
   record_video_of_camera?: boolean;
+  ip?: string;
+  advanced_options?: string;
+  select_authentication?: string;
+  verify_ssl?: string;
+  select_rtsp_transport?: string;
+  framerate?: string;
 }

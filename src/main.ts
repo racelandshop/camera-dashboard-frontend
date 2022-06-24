@@ -34,7 +34,7 @@ import {
   cameraModel,
   backEventOptions,
   schemaForm,
-  OpenDialogCameraForm,
+  CameraConfiguration,
 } from "./data/types";
 import { showCreateCameraDialog } from "./helpers/show-create-camera-dialog";
 import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog ";
@@ -56,9 +56,9 @@ declare global {
     };
     "open-camera-add-camera-form": {
       cameraModelInfo: cameraModel;
+      data: CameraConfiguration;
       schema: schemaForm;
-      back: true;
-      event: backEventOptions;
+      backEvent: backEventOptions;
     };
   }
 }
@@ -92,8 +92,8 @@ class cameraFrontend extends cameraDashboardElement {
       showCameraDialog(this, {
         cameraModelInfo: ev.detail.cameraModelInfo,
         schema: ev.detail.schema,
-        back: ev.detail.back,
-        event: ev.detail.event,
+        data: ev.detail.data,
+        backEvent: ev.detail.backEvent,
       });
     });
 

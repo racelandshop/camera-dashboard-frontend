@@ -16,11 +16,10 @@ import "../../../homeassistant-frontend/src/components/ha-form/ha-form";
 import "../../../homeassistant-frontend/src/components/ha-checkbox";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import { CameraFormsDialogParams } from "../../helpers/show-camera-form-dialog";
-import { cameraModel, backEventOptions, schemaForm } from "../../data/types";
+import { cameraModel, backEventOptions, schemaForm, CameraConfiguration } from "../../data/types";
 import "../camera-model-icon-button";
 import { localize } from "../../localize/localize";
 import { sendCameraInformation } from "../../data/websocket";
-import { none } from "@lit-labs/motion";
 
 @customElement("raceland-formulary")
 export class HuiCreateDialogCameraFormulary
@@ -29,54 +28,57 @@ export class HuiCreateDialogCameraFormulary
 {
   @property({ attribute: false }) protected hass!: HomeAssistant;
 
+  @property({ attribute: false }) protected open?: boolean;
+
   @property({ attribute: false }) protected modelDatabase?: Array<cameraModel>;
 
   @property({ attribute: false }) protected modelInfo!: cameraModel;
 
-  @property({ attribute: false }) protected data?; //TODO typeHint?
-
-  @property({ type: Boolean }) public back!: boolean;
+  @property({ attribute: false }) protected data!: CameraConfiguration;
 
   @property({ type: Boolean }) public disabledBool = false;
 
-  @property({ attribute: false }) event!: backEventOptions;
+  @property({ attribute: false }) backEvent!: backEventOptions;
 
   @property({ type: String }) public type!: string;
 
-  @property({ attribute: false }) schema?: schemaForm;
+  @property({ attribute: false }) schema!: schemaForm;
 
   @state() private _currTabIndex = 0;
 
   showDialog(params: CameraFormsDialogParams) {
     this.modelInfo = params.cameraModelInfo as cameraModel;
     this.schema = params.schema;
-    this.back = params.back;
-    this.event = params.event;
+    this.backEvent = params.backEvent;
+    this.data = params.data;
+    this.open = true;
   }
 
   public closeDialog(): boolean {
     this._currTabIndex = 0;
-    this.schema = undefined;
+    this.open = undefined;
     fireEvent(this, "dialog-closed", { dialog: this.localName });
     return true;
   }
 
   protected render(): TemplateResult {
-    if (!this.schema) {
+    if (!this.open) {
       return html``;
     }
     const schemaBody = this.schema.body;
+    const schemaExtraOptions = this.schema.extra_options;
 
     return html`
       <ha-dialog
         open
         scrimClickAction
         hideActions
+        @closed=${this.closeDialog}
         class=${classMap({ table: this._currTabIndex === 1 })}
       >
         <div class="cancel">
           <ha-svg-icon
-            @click=${this._cancel}
+            dialogAction="close"
             class="cancel-icon"
             slot="icon"
             .path=${mdiClose}
@@ -91,15 +93,26 @@ export class HuiCreateDialogCameraFormulary
             .computeLabel=${this._computeLabelCallback}
             @value-changed=${this._valueChanged}
           ></ha-form>
+          ${schemaExtraOptions && this.data.advanced_options
+            ? html` <ha-form
+                .hass=${this.hass}
+                .data=${this.data}
+                .schema=${schemaExtraOptions}
+                .computeLabel=${this._computeLabelCallback}
+                @value-changed=${this._valueChanged}
+              ></ha-form>`
+            : html``}
         </div>
         <div class="options">
           <mwc-button class="button-confirm" @click=${this._accept}
             >${this.schema.footer.accept}</mwc-button
           >
-          <mwc-button class="button-back" @click=${this.goBack}
-            >${this.schema.footer.back}
-            <ha-svg-icon class="icon-back" slot="icon" .path=${mdiChevronLeft}></ha-svg-icon
-          ></mwc-button>
+          ${this.backEvent
+            ? html`<mwc-button class="button-back" dialogAction="close" @click=${this._goBack}
+                >${this.schema.footer.back}
+                <ha-svg-icon class="icon-back" slot="icon" .path=${mdiChevronLeft}></ha-svg-icon
+              ></mwc-button>`
+            : html``}
         </div>
       </ha-dialog>
     `;
@@ -114,27 +127,17 @@ export class HuiCreateDialogCameraFormulary
     this.data = { ...this.data, ...config };
   }
 
-  private _cancel(ev?: Event) {
-    if (ev) {
-      ev.stopPropagation();
-    }
-    this.closeDialog();
-  }
-
   private _accept() {
-    //Add type checks
     const response = sendCameraInformation(this.hass, this.data);
     console.log("The response is... ", response);
     this.closeDialog();
   }
 
-  private goBack(ev) {
-    //Update this event
-    // fireEvent(this, "add-new-camera");
-    // if (ev) {
-    //   ev.stopPropagation();
-    // }
-    // this.closeDialog();
+  private _goBack(ev) {
+    const backEvent = this.backEvent;
+    if (backEvent) {
+      fireEvent(this, backEvent.event_name as keyof HASSDomEvents);
+    }
   }
 
   static get styles(): CSSResultGroup {

@@ -21,6 +21,11 @@
     "username": "Username",
     "password": "Password",
     "record_video_of_camera": "Record Video of Camera",
-    "ip": "IP"
+    "ip": "IP",
+    "advanced_options":"Advanced Options",
+    "select_authetication": "Select Authetication",
+    "verify_ssl": "Verify SSL",
+    "select_rtsp_transport": "Select RTSP Transport",
+    "framerate": "Framerate"
   }
 }

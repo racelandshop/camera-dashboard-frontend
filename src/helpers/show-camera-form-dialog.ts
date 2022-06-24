@@ -4,9 +4,9 @@ import type { backEventOptions, schemaForm } from "../data/types";
 
 export interface CameraFormsDialogParams {
   cameraModelInfo: cameraModel;
+  data: any;
   schema: schemaForm;
-  back: boolean;
-  event: backEventOptions;
+  backEvent: backEventOptions;
 }
 
 export const importCameraFormDialog = () => import("../components/dialogs/formulary");
