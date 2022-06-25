@@ -6,6 +6,7 @@ export interface CameraFormsDialogParams {
   cameraModelInfo: cameraModel;
   data: any;
   schema: schemaForm;
+  formType: string;
   backEvent: backEventOptions;
 }
 

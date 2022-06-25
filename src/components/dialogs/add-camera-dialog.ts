@@ -218,6 +218,7 @@ export class HuiCreateDialogCamera
       cameraModelInfo: {} as cameraModel,
       schema: form_schema,
       data: {},
+      formType: "custom_camera",
       backEvent: { event_name: "add-new-camera", data: this._cameraDatabase },
     });
     this.closeDialog();

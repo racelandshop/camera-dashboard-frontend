@@ -38,10 +38,10 @@ export interface schemaForm {
 }
 
 export interface CameraConfiguration {
-  integration: string;
-  camera_name: string;
+  integration?: string;
+  camera_name?: string;
   static_image_url?: string;
-  streal_url?: string;
+  stream_url?: string;
   username?: string;
   password?: string;
   record_video_of_camera?: boolean;

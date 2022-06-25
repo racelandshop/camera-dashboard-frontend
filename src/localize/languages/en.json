@@ -26,6 +26,12 @@
     "select_authetication": "Select Authetication",
     "verify_ssl": "Verify SSL",
     "select_rtsp_transport": "Select RTSP Transport",
-    "framerate": "Framerate"
+    "framerate": "Framerate",
+    "issues": {
+      "missing_integration": "Select an integration type",
+      "camera_name": "Camera name is required",
+      "duplicated_camera_name": "There is already a camera with that name",
+      "static_stream_url_missing": "Indicate a static or a stream URL"
+    }
   }
 }

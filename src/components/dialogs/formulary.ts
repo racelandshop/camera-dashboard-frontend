@@ -15,11 +15,12 @@ import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import "../../../homeassistant-frontend/src/components/ha-form/ha-form";
 import "../../../homeassistant-frontend/src/components/ha-checkbox";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
-import { CameraFormsDialogParams } from "../../helpers/show-camera-form-dialog";
-import { cameraModel, backEventOptions, schemaForm, CameraConfiguration } from "../../data/types";
 import "../camera-model-icon-button";
-import { localize } from "../../localize/localize";
+import { getCameraEntities } from "../../common";
 import { sendCameraInformation } from "../../data/websocket";
+import { backEventOptions, schemaForm, CameraConfiguration, cameraCard } from "../../data/types";
+import { CameraFormsDialogParams } from "../../helpers/show-camera-form-dialog";
+import { localize } from "../../localize/localize";
 
 @customElement("raceland-formulary")
 export class HuiCreateDialogCameraFormulary
@@ -30,28 +31,31 @@ export class HuiCreateDialogCameraFormulary
 
   @property({ attribute: false }) protected open?: boolean;
 
-  @property({ attribute: false }) protected modelDatabase?: Array<cameraModel>;
-
-  @property({ attribute: false }) protected modelInfo!: cameraModel;
-
   @property({ attribute: false }) protected data!: CameraConfiguration;
+
+  @property({ attribute: false }) protected registeredCameras!: Array<any>;
+
+  @property({ Type: String }) protected validIssue?;
 
   @property({ type: Boolean }) public disabledBool = false;
 
   @property({ attribute: false }) backEvent!: backEventOptions;
 
-  @property({ type: String }) public type!: string;
+  @property({ type: String }) public formType!: string;
 
   @property({ attribute: false }) schema!: schemaForm;
 
   @state() private _currTabIndex = 0;
 
   showDialog(params: CameraFormsDialogParams) {
-    this.modelInfo = params.cameraModelInfo as cameraModel;
     this.schema = params.schema;
     this.backEvent = params.backEvent;
     this.data = params.data;
+    this.formType = params.formType;
     this.open = true;
+    this.registeredCameras = getCameraEntities(this.hass.states).map(
+      (camera: cameraCard) => camera.name
+    );
   }
 
   public closeDialog(): boolean {
@@ -65,8 +69,11 @@ export class HuiCreateDialogCameraFormulary
     if (!this.open) {
       return html``;
     }
+
     const schemaBody = this.schema.body;
     const schemaExtraOptions = this.schema.extra_options;
+
+    //TODO Fix the issue in the header with the issue message position
 
     return html`
       <ha-dialog
@@ -85,6 +92,10 @@ export class HuiCreateDialogCameraFormulary
           ></ha-svg-icon>
         </div>
         <div class="header-text">${this.schema.header.title}</div>
+        ${this.validIssue
+          ? html`<div></div>
+              <div class="form-issue">${this.validIssue}</div>`
+          : html``}
         <div class="form">
           <ha-form
             .hass=${this.hass}
@@ -127,10 +138,32 @@ export class HuiCreateDialogCameraFormulary
     this.data = { ...this.data, ...config };
   }
 
+  private validInput(data) {
+    if (!this.data.integration) {
+      this.validIssue = localize("form.issues.missing_integration");
+      return false;
+    }
+    if (!this.data.camera_name) {
+      this.validIssue = localize("form.issues.camera_name");
+      return false;
+    }
+    if (this.registeredCameras.includes(this.data.camera_name)) {
+      this.validIssue = localize("form.issues.duplicated_camera_name");
+      return false;
+    }
+    if (this.data.static_image_url && this.data.stream_url) {
+      this.validIssue = localize("form.issues.static_stream_url_missing");
+      return false;
+    }
+    return true;
+  }
+
   private _accept() {
-    const response = sendCameraInformation(this.hass, this.data);
-    console.log("The response is... ", response);
-    this.closeDialog();
+    const valid = this.validInput(this.data);
+    if (valid === true) {
+      sendCameraInformation(this.hass, this.data);
+      this.closeDialog();
+    }
   }
 
   private _goBack(ev) {
@@ -197,6 +230,16 @@ export class HuiCreateDialogCameraFormulary
           --mdc-theme-primary: #7b7b7b;
           float: left;
           margin-left: 5%;
+        }
+
+        .form-issue {
+          font-family: "Roboto";
+          font-style: normal;
+          font-size: 12px;
+          color: #e41111;
+          padding: 1% 1% 1% 12%;
+          text-align: left;
+          width: 100%;
         }
 
         .icon-back {

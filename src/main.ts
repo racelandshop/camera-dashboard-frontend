@@ -58,6 +58,7 @@ declare global {
       cameraModelInfo: cameraModel;
       data: CameraConfiguration;
       schema: schemaForm;
+      formType: string;
       backEvent: backEventOptions;
     };
   }
@@ -93,6 +94,7 @@ class cameraFrontend extends cameraDashboardElement {
         cameraModelInfo: ev.detail.cameraModelInfo,
         schema: ev.detail.schema,
         data: ev.detail.data,
+        formType: ev.detail.formType,
         backEvent: ev.detail.backEvent,
       });
     });
@@ -233,9 +235,6 @@ class cameraFrontend extends cameraDashboardElement {
     }
 
     let registeredCameras = getCameraEntities(this.hass.states);
-
-    //let registeredCameras = [];
-
     registeredCameras = this._filterCameras(registeredCameras, this._filter);
 
     return html`
