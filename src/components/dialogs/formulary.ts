@@ -73,8 +73,6 @@ export class HuiCreateDialogCameraFormulary
     const schemaBody = this.schema.body;
     const schemaExtraOptions = this.schema.extra_options;
 
-    //TODO Fix the issue in the header with the issue message position
-
     return html`
       <ha-dialog
         open
@@ -92,10 +90,7 @@ export class HuiCreateDialogCameraFormulary
           ></ha-svg-icon>
         </div>
         <div class="header-text">${this.schema.header.title}</div>
-        ${this.validIssue
-          ? html`<div></div>
-              <div class="form-issue">${this.validIssue}</div>`
-          : html``}
+        ${this.validIssue ? html` <div class="form-issue">${this.validIssue}</div>` : html``}
         <div class="form">
           <ha-form
             .hass=${this.hass}
@@ -252,7 +247,6 @@ export class HuiCreateDialogCameraFormulary
         }
 
         .header-text {
-          float: left;
           font-family: "Roboto";
           font-style: normal;
           font-weight: 500;
