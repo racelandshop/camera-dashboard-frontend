@@ -133,7 +133,7 @@ export class HuiCreateDialogCameraFormulary
     this.data = { ...this.data, ...config };
   }
 
-  private validInput(data) {
+  private validInput() {
     if (!this.data.integration) {
       this.validIssue = localize("form.issues.missing_integration");
       return false;
@@ -146,7 +146,7 @@ export class HuiCreateDialogCameraFormulary
       this.validIssue = localize("form.issues.duplicated_camera_name");
       return false;
     }
-    if (this.data.static_image_url && this.data.stream_url) {
+    if (!this.data.static_image_url && !this.data.stream_url) {
       this.validIssue = localize("form.issues.static_stream_url_missing");
       return false;
     }
@@ -154,7 +154,7 @@ export class HuiCreateDialogCameraFormulary
   }
 
   private _accept() {
-    const valid = this.validInput(this.data);
+    const valid = this.validInput();
     if (valid === true) {
       sendCameraInformation(this.hass, this.data);
       this.closeDialog();
