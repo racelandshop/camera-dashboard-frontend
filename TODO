@@ -9,7 +9,6 @@ Review CSS (there are some place where the px measure might need to be switched 
 Add rounded edges for all the cards
 Make Sure I pass hass for all the elements (? might not be necessary but it good practice)
 When I click +camera it take a while for the first dialog to appear. Why?
-On dialog if I press 'esc' I can not reopen the dialogs
 Rework the entire HACS object into a raceland object. I will need this for updating
 
 ### In main

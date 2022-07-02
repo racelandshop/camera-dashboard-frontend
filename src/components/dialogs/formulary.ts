@@ -169,13 +169,15 @@ export class HuiCreateDialogCameraFormulary
   }
 
   private _accept() {
-    if (this.formType == "custom_camera") {
+    if (this.formType === "custom_camera") {
       const valid = this.validInputCustom();
       if (valid === true) {
-        sendCameraInformation(this.hass, this.data);
+        console.log("Sending camera information to backend");
+        const results = sendCameraInformation(this.hass, this.data);
+        console.log(results);
         this.closeDialog();
       }
-    } else if (this.formType == "brand_camera") {
+    } else if (this.formType === "brand_camera") {
       const valid = this.validInput();
       if (valid === true) {
         //TODO: parse the input. this.data -> parsed_data
