@@ -33,7 +33,7 @@ export const customSchema = memoizeOne((integrationOptions): HaFormSchema[] => [
       },
       {
         name: "password",
-        selector: { text: {} },
+        selector: { text: { type: "password" } },
       },
     ],
   },
@@ -94,7 +94,7 @@ export const modelSchema = [
   },
   {
     name: "password",
-    selector: { text: {} },
+    selector: { text: { type: "password" } },
   },
   {
     name: "number_of_cameras",

@@ -12,8 +12,6 @@ When I click +camera it take a while for the first dialog to appear. Why?
 On dialog if I press 'esc' I can not reopen the dialogs
 Rework the entire HACS object into a raceland object. I will need this for updating
 
-transfer \_customSchema to a different file to be acesses from all cameras-dialog
-
 ### In main
 
 - The search bar can be used to search for more stuff in the camera information (disccus at the end)
