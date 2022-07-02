@@ -23,9 +23,8 @@ import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 // import "./hui-entity-picker-table";
 import { CameraModelsDialogParams } from "../../helpers/show-camera-models-dialog";
 import { cameraBrand, cameraModel } from "../../data/types";
+import { customSchema, customCameraExtraOptionSchema, modelSchema } from "../../schemas";
 import "../camera-model-icon-button";
-// import { showEditCardDialog } from "./show-edit-card-dialog";
-// import { showSuggestCardDialog } from "./show-suggest-card-dialog";
 import { localize } from "../../localize/localize";
 
 @customElement("camera-brand-dialog")
@@ -37,14 +36,11 @@ export class HuiCreateDialogCameraBrand
 
   @property({ attribute: false }) protected modelDatabase?: Array<cameraModel>;
 
-  @property({ attribute: false }) protected cameraDatabase?: any; //TODO typehint
-
   @state() private _currTabIndex = 0;
 
   @state() private _filter = "";
 
   public async showDialog(params: CameraModelsDialogParams): Promise<void> {
-    console.log("opening dialog with params", params);
     this.modelDatabase = params.modelsInfo;
     // const [view] = params.path;
     // this._viewConfig = params.lovelaceConfig.views[view];
@@ -130,17 +126,43 @@ export class HuiCreateDialogCameraBrand
   }
 
   private _addCamera(cameraModelInfo) {
+    const form_schema = {
+      header: { title: localize("common.add_camera") },
+      body: modelSchema,
+      footer: {
+        back: localize("common.go_back"),
+        accept: localize("common.add_camera"),
+      },
+    };
+
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: cameraModelInfo,
-      formType: "modelForm",
+      schema: form_schema,
+      data: {},
+      formType: "brand_camera",
+      backEvent: { event_name: "open-camera-brand-dialog", modelDatabase: this.modelDatabase },
     });
+
     this.closeDialog();
   }
 
   private _addCustomCamera(ev) {
+    const form_schema = {
+      header: { title: localize("common.add_camera") },
+      body: customSchema(["generic", "FFMPEG"]),
+      extra_options: customCameraExtraOptionSchema,
+      footer: {
+        back: localize("common.go_back"),
+        accept: localize("common.add_camera"),
+      },
+    };
+
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: {} as cameraModel,
-      formType: "customCameraForm",
+      schema: form_schema,
+      data: {},
+      formType: "custom_camera",
+      backEvent: { event_name: "open-camera-brand-dialog", modelDatabase: this.modelDatabase },
     });
     this.closeDialog();
   }

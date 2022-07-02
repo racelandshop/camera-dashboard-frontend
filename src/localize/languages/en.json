@@ -22,6 +22,7 @@
     "password": "Password",
     "record_video_of_camera": "Record Video of Camera",
     "ip": "IP",
+    "number_of_cameras": "Number of cameras",
     "advanced_options":"Advanced Options",
     "select_authetication": "Select Authetication",
     "verify_ssl": "Verify SSL",

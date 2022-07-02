@@ -9,14 +9,15 @@ import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
 import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
-import "../search-input-round";
+import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import { CreateCameraDialogParams } from "../../helpers/show-create-camera-dialog";
+import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { cameraBrand, cameraModel } from "../../data/types";
-import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
 import "../camera-brand-icon-button";
+import "../search-input-round";
 import { localize } from "../../localize/localize";
 
 @customElement("add-camera-dialog")
@@ -58,88 +59,6 @@ export class HuiCreateDialogCamera
     filteredBrands = fuse.search(filter).map((result) => result.item);
     return filteredBrands;
   });
-
-  private _customSchema = memoizeOne((integrationOptions): HaFormSchema[] => [
-    {
-      name: "integration",
-      selector: {
-        select: {
-          options: integrationOptions,
-          mode: "dropdown",
-        },
-      },
-    },
-    {
-      name: "camera_name",
-      selector: { text: {} },
-    },
-    {
-      name: "static_image_url",
-      selector: { text: {} },
-    },
-    {
-      name: "stream_url",
-      selector: { text: {} },
-    },
-    {
-      type: "grid",
-      name: "",
-      schema: [
-        {
-          name: "username",
-          selector: { text: {} },
-        },
-        {
-          name: "password",
-          selector: { text: {} },
-        },
-      ],
-    },
-    { name: "record_video_of_camera", selector: { boolean: {} } },
-    { name: "advanced_options", selector: { boolean: {} } },
-  ]);
-
-  private _customCameraExtraOptionSchema = [
-    {
-      name: "select_authetication",
-      selector: {
-        select: {
-          options: ["Basic", "Digest"],
-          mode: "dropdown",
-        },
-      },
-    },
-    {
-      name: "verify_ssl",
-      selector: {
-        select: {
-          options: ["True", "False"],
-          mode: "dropdown",
-        },
-      },
-    },
-    {
-      name: "select_rtsp_transport",
-      selector: {
-        select: {
-          options: ["TCP", "Option2"],
-          mode: "dropdown",
-        },
-      },
-    },
-    {
-      name: "framerate",
-      selector: {
-        number: {
-          min: 1,
-          max: 60,
-          step: 1,
-          mode: "slider",
-          unit_of_measurement: "FPS",
-        },
-      },
-    },
-  ];
 
   protected render(): TemplateResult {
     if (!this._cameraDatabase) {
@@ -206,8 +125,8 @@ export class HuiCreateDialogCamera
   private _addCustomCamera(ev) {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: this._customSchema(["generic", "FFMPEG"]),
-      extra_options: this._customCameraExtraOptionSchema,
+      body: customSchema(["generic", "FFMPEG"]),
+      extra_options: customCameraExtraOptionSchema,
       footer: {
         back: localize("common.go_back"),
         accept: localize("common.add_camera"),
@@ -219,7 +138,7 @@ export class HuiCreateDialogCamera
       schema: form_schema,
       data: {},
       formType: "custom_camera",
-      backEvent: { event_name: "add-new-camera", data: this._cameraDatabase },
+      backEvent: { event_name: "add-new-camera" },
     });
     this.closeDialog();
   }

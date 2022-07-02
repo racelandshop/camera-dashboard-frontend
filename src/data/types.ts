@@ -24,13 +24,14 @@ export interface cameraOption {
 
 export interface backEventOptions {
   event_name: string;
-  data: any;
+  modelDatabase?: Array<cameraModel>;
 }
 
 export interface schemaForm {
   header: { title: string };
   body: HaFormSchema[];
-  extra_options: HaFormSchema[];
+  extra_options?: HaFormSchema[];
+  cameraModelInfo?: cameraModel;
   footer: {
     back: string;
     accept: string;

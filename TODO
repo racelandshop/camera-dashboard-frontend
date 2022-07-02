@@ -4,12 +4,15 @@ How will I load the css from the themes into this?
 
 Add type hints for camera types
 Try aspecto with other screens (Is there a need to adapt it to small screens?)
-REview CSS (there are some place where the px measure might need to be switched to percentages)
+Review the the fire-events
+Review CSS (there are some place where the px measure might need to be switched to percentages)
 Add rounded edges for all the cards
 Make Sure I pass hass for all the elements (? might not be necessary but it good practice)
 When I click +camera it take a while for the first dialog to appear. Why?
 On dialog if I press 'esc' I can not reopen the dialogs
 Rework the entire HACS object into a raceland object. I will need this for updating
+
+transfer \_customSchema to a different file to be acesses from all cameras-dialog
 
 ### In main
 
@@ -36,8 +39,6 @@ Rework the entire HACS object into a raceland object. I will need this for updat
 
 ## In formulary
 
-- Close button does not work on the formulary dialog for some reason
 - Integration type -> Use SVG icon in before the selector
 - Icons in record Video of camera and more options are not appearing
-- Advanced Options for custom camera
-- In the autocomplete camera form (when picking one camera model, add information about the default 'door' i.e what comes after :). Also, if the IP has a 'door' ignore this parameter.
+- In the autocomplete camera form (when picking one camera model, add information about the default 'door' i.e what comes after ":" . Also, if the IP has a 'door' ignore this parameter.

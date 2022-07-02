@@ -18,7 +18,13 @@ import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import "../camera-model-icon-button";
 import { getCameraEntities } from "../../common";
 import { sendCameraInformation } from "../../data/websocket";
-import { backEventOptions, schemaForm, CameraConfiguration, cameraCard } from "../../data/types";
+import {
+  backEventOptions,
+  schemaForm,
+  CameraConfiguration,
+  cameraCard,
+  cameraModel,
+} from "../../data/types";
 import { CameraFormsDialogParams } from "../../helpers/show-camera-form-dialog";
 import { localize } from "../../localize/localize";
 
@@ -29,21 +35,21 @@ export class HuiCreateDialogCameraFormulary
 {
   @property({ attribute: false }) protected hass!: HomeAssistant;
 
-  @property({ attribute: false }) protected open?: boolean;
+  @property({ attribute: false }) protected dialogOpen?: boolean;
 
   @property({ attribute: false }) protected data!: CameraConfiguration;
 
-  @property({ attribute: false }) protected registeredCameras!: Array<any>;
-
-  @property({ Type: String }) protected validIssue?;
-
-  @property({ type: Boolean }) public disabledBool = false;
+  @property({ attribute: false }) protected cameraModelInfo?: cameraModel;
 
   @property({ attribute: false }) backEvent!: backEventOptions;
 
   @property({ type: String }) public formType!: string;
 
   @property({ attribute: false }) schema!: schemaForm;
+
+  @property({ type: String }) protected validIssue?;
+
+  @property({ attribute: false }) protected registeredCameras!: Array<any>;
 
   @state() private _currTabIndex = 0;
 
@@ -52,7 +58,8 @@ export class HuiCreateDialogCameraFormulary
     this.backEvent = params.backEvent;
     this.data = params.data;
     this.formType = params.formType;
-    this.open = true;
+    this.cameraModelInfo = params.cameraModelInfo;
+    this.dialogOpen = true;
     this.registeredCameras = getCameraEntities(this.hass.states).map(
       (camera: cameraCard) => camera.name
     );
@@ -60,13 +67,13 @@ export class HuiCreateDialogCameraFormulary
 
   public closeDialog(): boolean {
     this._currTabIndex = 0;
-    this.open = undefined;
+    this.dialogOpen = undefined;
     fireEvent(this, "dialog-closed", { dialog: this.localName });
     return true;
   }
 
   protected render(): TemplateResult {
-    if (!this.open) {
+    if (!this.dialogOpen) {
       return html``;
     }
 
@@ -133,7 +140,7 @@ export class HuiCreateDialogCameraFormulary
     this.data = { ...this.data, ...config };
   }
 
-  private validInput() {
+  private validInputCustom() {
     if (!this.data.integration) {
       this.validIssue = localize("form.issues.missing_integration");
       return false;
@@ -153,17 +160,37 @@ export class HuiCreateDialogCameraFormulary
     return true;
   }
 
+  private validInput() {
+    if (!this.data.camera_name) {
+      this.validIssue = localize("form.issues.camera_name");
+      return false;
+    }
+    return true;
+  }
+
   private _accept() {
-    const valid = this.validInput();
-    if (valid === true) {
-      sendCameraInformation(this.hass, this.data);
-      this.closeDialog();
+    if (this.formType == "custom_camera") {
+      const valid = this.validInputCustom();
+      if (valid === true) {
+        sendCameraInformation(this.hass, this.data);
+        this.closeDialog();
+      }
+    } else if (this.formType == "brand_camera") {
+      const valid = this.validInput();
+      if (valid === true) {
+        //TODO: parse the input. this.data -> parsed_data
+        sendCameraInformation(this.hass, this.data);
+        this.closeDialog();
+      }
     }
   }
 
   private _goBack(ev) {
     const backEvent = this.backEvent;
-    if (backEvent) {
+    const modelDatabase = backEvent.modelDatabase;
+    if (modelDatabase) {
+      fireEvent(this, backEvent.event_name as keyof HASSDomEvents, { modelsInfo: modelDatabase });
+    } else {
       fireEvent(this, backEvent.event_name as keyof HASSDomEvents);
     }
   }

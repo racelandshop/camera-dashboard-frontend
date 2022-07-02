@@ -3,8 +3,7 @@ import { cameraModel } from "../data/types";
 import type { backEventOptions, schemaForm } from "../data/types";
 
 export interface CameraFormsDialogParams {
-  cameraModelInfo: cameraModel;
-  data: any;
+  data?: any;
   schema: schemaForm;
   formType: string;
   backEvent: backEventOptions;
