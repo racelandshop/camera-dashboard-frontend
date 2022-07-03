@@ -1,6 +1,8 @@
 import "@material/mwc-tab-bar/mwc-tab-bar";
 import "@material/mwc-tab/mwc-tab";
 import "@material/mwc-button/mwc-button";
+import { localize } from "../../localize/localize";
+import { removeCamera } from "../../data/websocket";
 import { mdiCheckboxMarkedCircle, mdiDelete } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
@@ -21,34 +23,30 @@ export class HuiDeleteDialogCamera
 
   @state() private _params?: DeleteCameraDialogParams;
 
+  @state() private cameraInfo: any;
+
   @state() private _currTabIndex = 0;
 
   public async showDialog(params: DeleteCameraDialogParams): Promise<void> {
     this._params = params;
-    // const [view] = params.path;
-    // this._viewConfig = params.lovelaceConfig.views[view];
-    console.log("Running showDialog with params ", params);
+    this.cameraInfo = this._params.cameraInfo;
   }
 
   public closeDialog(): boolean {
     this._params = undefined;
-    this._currTabIndex = 0;
-    // this._selectedEntities = [];
     fireEvent(this, "dialog-closed", { dialog: this.localName });
-    return true;
   }
 
   protected render(): TemplateResult {
     if (!this._params) {
       return html``;
     }
-    const title = "Delete camera";
     return html`
       <ha-dialog
         open
         scrimClickAction
         hideActions
-        .heading=${title}
+        .heading=${localize("common.delete_camera")}
         class=${classMap({ table: this._currTabIndex === 1 })}
       >
         <div class="header" slot="heading">
@@ -59,18 +57,20 @@ export class HuiDeleteDialogCamera
           </ha-header-bar>
         </div>
         <div class="text">
-          <p class="big-text">Delete camera</p>
-          <p class="small-text">This action can not be undone</p>
+          <p class="big-text">${localize("common.delete_camera")}</p>
+          <p class="small-text">${localize("dialog_text.verify_action")}</p>
         </div>
         <div class="options">
-          <mwc-button class="button-cancel" @click=${this._cancel}> ${"Cancel"}</mwc-button>
+          <mwc-button class="button-cancel" @click=${this._cancel}>
+            ${localize("common.back")}</mwc-button
+          >
           <mwc-button class="button-confirm" @click=${this._delete}
             ><ha-svg-icon
               class="confirm-icon"
               slot="icon"
               .path=${mdiCheckboxMarkedCircle}
             ></ha-svg-icon
-            >${"confirm"}</mwc-button
+            >${localize("common.confirm")}</mwc-button
           >
         </div>
       </ha-dialog>
@@ -88,12 +88,8 @@ export class HuiDeleteDialogCamera
     if (ev) {
       ev.stopPropagation();
     }
-    console.log("Delete camera not implemented");
+    removeCamera(this.hass, this.cameraInfo.entity_id);
     this.closeDialog();
-  }
-
-  private _ignoreKeydown(ev: KeyboardEvent) {
-    ev.stopPropagation();
   }
 
   static get styles(): CSSResultGroup {

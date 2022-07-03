@@ -11,6 +11,8 @@ Make Sure I pass hass for all the elements (? might not be necessary but it good
 When I click +camera it take a while for the first dialog to appear. Why?
 Rework the entire HACS object into a raceland object. I will need this for updating
 
+DO/Verify translations. Duplicated keys in translation
+
 ### In main
 
 - The search bar can be used to search for more stuff in the camera information (disccus at the end)
@@ -23,7 +25,7 @@ Rework the entire HACS object into a raceland object. I will need this for updat
 
 ## In the select brand dialog
 
-- Fetch local items
+- Fetch local items (images)
 - Dinamic text size with css depending on the lenght?
 
 ## In the new-camera-card

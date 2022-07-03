@@ -1,4 +1,10 @@
-import type { HaFormSchema } from "./../homeassistant-frontend/src/components/ha-form/types";
+import type { HaFormSchema } from "./../homeassistant-frontend/src/components/ha-form/types"; //TODO: Why is there an error?
+
+export interface cameraInfo {
+  name: string;
+  entity_id: string;
+  state: string;
+}
 
 export interface cameraCard {
   name?: string;

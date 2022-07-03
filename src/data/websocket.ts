@@ -20,6 +20,14 @@ export const sendCameraInformation = async (hass: HomeAssistant, cameraInfo) => 
   return response;
 };
 
+export const removeCamera = async (hass: HomeAssistant, camera_entity_id) => {
+  const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
+    type: "raceland-camera-dashboard/remove_camera",
+    entity_id: camera_entity_id,
+  });
+  return response;
+};
+
 export const getConfiguration = async (hass: HomeAssistant) => {
   const response = await hass.connection.sendMessagePromise<Configuration>({
     type: "hacs/config",

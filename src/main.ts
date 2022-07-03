@@ -226,7 +226,6 @@ class cameraFrontend extends cameraDashboardElement {
     const fuse = new Fuse(filteredCameras, options);
     filteredCameras = fuse.search(filter).map((result) => result.item);
     return filteredCameras;
-    // return cardElements.filter((cardElement: CardElement) => cards.includes(cardElement.card));
   });
 
   protected render(): TemplateResult | void {

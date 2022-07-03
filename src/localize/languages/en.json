@@ -4,9 +4,14 @@
     "edit": "Edit",
     "delete": "Delete",
     "back": "Back",
+    "confirm": "confirm",
     "add_camera": "Add camera",
+    "delete_camera": "Delete Camera",
     "custom_camera": "Custom Camera",
     "go_back": "Back"
+  },
+  "dialog_text":{
+    "verify_action": "This action can not be undone"
   },
   "search":{
     "cameras": "Search cameras",
