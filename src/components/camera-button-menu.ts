@@ -1,8 +1,10 @@
 import "@material/mwc-menu";
 import "@material/mwc-list/mwc-list-item";
+import { ActionDetail } from "@material/mwc-list/mwc-list-foundation";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators";
 import { mdiDotsVertical, mdiDelete } from "@mdi/js";
+import { localize } from "../localize/localize";
 import "../../homeassistant-frontend/src/components/ha-button-menu";
 import "../../homeassistant-frontend/src/components/ha-icon-button";
 import { HomeAssistant } from "../../homeassistant-frontend/src/types";
@@ -18,10 +20,10 @@ export class cameraButtonMenu extends LitElement {
     return html`
       <ha-button-menu corner="BOTTOM_LEFT" @action=${this._handleAction}>
         <ha-icon-button slot="trigger" .path=${mdiDotsVertical}></ha-icon-button>
-        <mwc-list-item>Edit</mwc-list-item>
+        <mwc-list-item>${localize("common.edit")}</mwc-list-item>
         <div class="line"></div>
         <mwc-list-item class="delete-item"
-          ><ha-svg-icon .path=${mdiDelete}></ha-svg-icon>Delete</mwc-list-item
+          ><ha-svg-icon .path=${mdiDelete}></ha-svg-icon>${localize("common.delete")}</mwc-list-item
         >
       </ha-button-menu>
     `;
@@ -34,6 +36,7 @@ export class cameraButtonMenu extends LitElement {
         console.log("Running edit (not implemented)");
         break;
       case 1:
+        console.log("Running delte camera, with the info: ", this.cameraInfo);
         fireEvent(this, "delete-camera", { cameraInfo: this.cameraInfo });
         break;
     }

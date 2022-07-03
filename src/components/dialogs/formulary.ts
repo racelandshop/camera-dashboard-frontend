@@ -172,7 +172,6 @@ export class HuiCreateDialogCameraFormulary
     if (this.formType === "custom_camera") {
       const valid = this.validInputCustom();
       if (valid === true) {
-        console.log("Sending camera information to backend");
         const results = sendCameraInformation(this.hass, this.data);
         console.log(results);
         this.closeDialog();
