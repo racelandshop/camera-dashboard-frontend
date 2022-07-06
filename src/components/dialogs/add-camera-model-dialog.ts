@@ -81,6 +81,7 @@ export class HuiCreateDialogCameraBrand
         open
         scrimClickAction
         hideActions
+        @closed=${this.closeDialog}
         class=${classMap({ table: this._currTabIndex === 1 })}
       >
         <div class="cancel">
