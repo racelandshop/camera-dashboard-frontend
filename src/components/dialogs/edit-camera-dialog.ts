@@ -1,7 +1,7 @@
 import "@material/mwc-tab-bar/mwc-tab-bar";
 import "@material/mwc-tab/mwc-tab";
 import "@material/mwc-button/mwc-button";
-import { mdiClose } from "@mdi/js";
+import { mdiClose, mdiEyeOff, mdiEye } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map";
 import { customElement, property, state } from "lit/decorators";
@@ -29,6 +29,8 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
   @property({ attribute: false }) protected dialogOpen?: boolean;
 
   @property({ attribute: false }) protected cameraInfo: any;
+
+  @state() private _unmaskedPassword = false;
 
   @state() private _params?: EditCameraDialogParams;
 
@@ -118,7 +120,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
             <ha-textfield
               label=${localize("form.password")}
               value=${this.cameraInfo.password}
-              type="password"
+              .type=${this._unmaskedPassword ? "text" : "password"}
             >
             </ha-textfield>
             <ha-icon-button
@@ -155,7 +157,6 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
                   (item) => html`<mwc-list-item value=${item}>${item}</mwc-list-item>`
                 )}</ha-select
               >
-
               <ha-select
                 class="editFormulary"
                 label=${localize("form.verify_ssl")}
@@ -174,6 +175,10 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           : html``}
       </div>
     </ha-dialog>`;
+  }
+
+  private _toggleUnmaskedPassword(): void {
+    this._unmaskedPassword = !this._unmaskedPassword;
   }
 
   static get styles(): CSSResultGroup {

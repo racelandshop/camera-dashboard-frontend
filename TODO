@@ -15,6 +15,8 @@ DO/Verify translations. Duplicated keys in translation
 
 I also have to be carefull to update the frontned information when If the entity Id is updated
 
+In the advanced options toogle I can implement it in another (check enery dashboard)
+
 ### In main
 
 - The search bar can be used to search for more stuff in the camera information (disccus at the end)
@@ -48,6 +50,8 @@ I also have to be carefull to update the frontned information when If the entity
 ## In the edit camera info dialog:
 
 - Need to update/improve the CSS
+
+  - The password field needs to fit next to the username
 
 - Figure out how to make the icon for the password to appear
 - change the slider to also include the FPS number
