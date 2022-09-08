@@ -12,7 +12,7 @@ import {
 
 import { CameraConfiguration } from "./types";
 
-export const sendCameraInformation = async (hass: HomeAssistant, cameraInfo) => {
+export const sendCameraInformation = async (hass: HomeAssistant, cameraInfo): Promise<any> => {
   const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
     type: "raceland-camera-dashboard/register_camera",
     ...cameraInfo,
@@ -23,6 +23,14 @@ export const sendCameraInformation = async (hass: HomeAssistant, cameraInfo) => 
 export const removeCamera = async (hass: HomeAssistant, camera_entity_id) => {
   const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
     type: "raceland-camera-dashboard/remove_camera",
+    entity_id: camera_entity_id,
+  });
+  return response;
+};
+
+export const fetchCameraInformation = async (hass: HomeAssistant, camera_entity_id) => {
+  const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
+    type: "raceland-camera-dashboard/fetch_camera_information",
     entity_id: camera_entity_id,
   });
   return response;

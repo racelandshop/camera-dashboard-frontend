@@ -13,6 +13,8 @@ Rework the entire HACS object into a raceland object. I will need this for updat
 
 DO/Verify translations. Duplicated keys in translation
 
+I also have to be carefull to update the frontned information when If the entity Id is updated
+
 ### In main
 
 - The search bar can be used to search for more stuff in the camera information (disccus at the end)
@@ -41,3 +43,14 @@ DO/Verify translations. Duplicated keys in translation
 - Integration type -> Use SVG icon in before the selector
 - Icons in record Video of camera and more options are not appearing
 - In the autocomplete camera form (when picking one camera model, add information about the default 'door' i.e what comes after ":" . Also, if the IP has a 'door' ignore this parameter.
+- I can not add a camera if there are advanced options. Why?
+
+## In the edit camera info dialog:
+
+- Need to update/improve the CSS
+
+- Figure out how to make the icon for the password to appear
+- change the slider to also include the FPS number
+- Implement the "edit camera" button"
+- The switch are not appearing
+- Advanced options are not appearing

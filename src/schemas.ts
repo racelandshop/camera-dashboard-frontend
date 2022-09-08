@@ -43,7 +43,7 @@ export const customSchema = memoizeOne((integrationOptions): HaFormSchema[] => [
 
 export const customCameraExtraOptionSchema = [
   {
-    name: "select_authetication",
+    name: "authentication",
     selector: {
       select: {
         options: ["Basic", "Digest"],
@@ -61,7 +61,7 @@ export const customCameraExtraOptionSchema = [
     },
   },
   {
-    name: "select_rtsp_transport",
+    name: "rtsp_transport",
     selector: {
       select: {
         options: ["TCP", "Option2"],

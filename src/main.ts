@@ -38,6 +38,7 @@ import {
 } from "./data/types";
 import { showCreateCameraDialog } from "./helpers/show-create-camera-dialog";
 import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog ";
+import { showEditCameraDialog } from "./helpers/show-edit-camera-dialog";
 import { showModelOptionsDialog } from "./helpers/show-camera-models-dialog";
 import { showCameraDialog } from "./helpers/show-camera-form-dialog";
 // import { HacsStyles } from "./styles/hacs-common-style";
@@ -51,6 +52,7 @@ declare global {
   interface HASSDomEvents {
     "add-new-camera": undefined;
     "delete-camera": { cameraInfo: any }; //TODO: add type hint
+    "edit-camera": { cameraInfo: any };
     "open-camera-brand-dialog": {
       modelsInfo?: Array<cameraModel>;
     };
@@ -61,6 +63,7 @@ declare global {
       formType: string;
       backEvent: backEventOptions;
     };
+    "update-camera-dashboard": undefined;
   }
 }
 
@@ -72,12 +75,22 @@ class cameraFrontend extends cameraDashboardElement {
 
   @property({ attribute: false }) public route!: Route;
 
+  @property({ attribute: false }) public registeredCameras!: any; //This can be part of the "hacs" object passed between dialogs.
+
   @state() private _filter = "";
+
+  public connectedCallback() {
+    super.connectedCallback();
+  }
 
   protected firstUpdated(changedProps) {
     super.firstUpdated(changedProps);
 
     this._applyTheme();
+
+    this.addEventListener("update-camera-dashboard", () => {
+      this._updateCameraDashboard();
+    });
 
     this.addEventListener("add-new-camera", () => {
       showCreateCameraDialog(this, { database: cameraDatabase });
@@ -101,6 +114,10 @@ class cameraFrontend extends cameraDashboardElement {
 
     this.addEventListener("delete-camera", (ev) => {
       showDeleteCameraDialog(this, { cameraInfo: ev.detail.cameraInfo });
+    });
+
+    this.addEventListener("edit-camera", (ev) => {
+      showEditCameraDialog(this, { cameraInfo: ev.detail.cameraInfo });
     });
 
     // websocketSubscription(
@@ -162,6 +179,7 @@ class cameraFrontend extends cameraDashboardElement {
 
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
+    console.log("Running updated with changedProps", changedProps);
     const oldHass = changedProps.get("hass") as HomeAssistant | undefined;
     if (!oldHass) {
       return;
@@ -212,6 +230,10 @@ class cameraFrontend extends cameraDashboardElement {
     }
   }
 
+  protected _updateCameraDashboard() {
+    this.registeredCameras = getCameraEntities(this.hass.states);
+  }
+
   private _filterCameras = memoizeOne((cameras, filter?: string) => {
     if (!filter) {
       return cameras;
@@ -233,8 +255,11 @@ class cameraFrontend extends cameraDashboardElement {
       return html``;
     }
 
-    let registeredCameras = getCameraEntities(this.hass.states);
-    registeredCameras = this._filterCameras(registeredCameras, this._filter);
+    if (this.registeredCameras === undefined) {
+      this.registeredCameras = getCameraEntities(this.hass.states);
+    }
+
+    const filteredCameras = this._filterCameras(this.registeredCameras, this._filter);
 
     return html`
       <search-input
@@ -246,9 +271,9 @@ class cameraFrontend extends cameraDashboardElement {
       <div class="sep"></div>
 
       <div class="camera-list">
-        ${registeredCameras.length === 0
+        ${filteredCameras.length === 0
           ? html`<new-camera-card .hass=${this.hass} .narrow=${this.narrow}> </new-camera-card>`
-          : registeredCameras.map(
+          : filteredCameras.map(
               (cam_info) =>
                 html` <raceland-camera-card
                   .hass=${this.hass}
@@ -258,7 +283,7 @@ class cameraFrontend extends cameraDashboardElement {
                 ></raceland-camera-card>`
             )}
       </div>
-      ${registeredCameras.length === 0
+      ${filteredCameras.length === 0
         ? html``
         : html`<ha-fab .label=${localize("common.camera")} extended @click=${this._addCamera} })}>
             <ha-svg-icon slot="icon" .path=${mdiPlus}></ha-svg-icon>

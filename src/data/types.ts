@@ -54,8 +54,8 @@ export interface CameraConfiguration {
   record_video_of_camera?: boolean;
   ip?: string;
   advanced_options?: string;
-  select_authentication?: string;
+  authentication?: string;
   verify_ssl?: string;
-  select_rtsp_transport?: string;
+  rtsp_transport?: string;
   framerate?: string;
 }

@@ -168,19 +168,21 @@ export class HuiCreateDialogCameraFormulary
     return true;
   }
 
-  private _accept() {
+  private async _accept() {
     if (this.formType === "custom_camera") {
       const valid = this.validInputCustom();
       if (valid === true) {
-        const results = sendCameraInformation(this.hass, this.data);
-        console.log(results);
-        this.closeDialog();
+        const result = await sendCameraInformation(this.hass, this.data);
+        if (result === true) {
+          this.closeDialog();
+          fireEvent(this, "update-camera-dashboard");
+        }
       }
     } else if (this.formType === "brand_camera") {
       const valid = this.validInput();
       if (valid === true) {
         //TODO: parse the input. this.data -> parsed_data
-        sendCameraInformation(this.hass, this.data);
+        const results = sendCameraInformation(this.hass, this.data);
         this.closeDialog();
       }
     }

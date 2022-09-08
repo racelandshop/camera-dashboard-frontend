@@ -33,7 +33,7 @@ export class cameraButtonMenu extends LitElement {
     //Implement functions later
     switch (ev.detail.index) {
       case 0:
-        console.log("Running edit (not implemented)");
+        fireEvent(this, "edit-camera", { cameraInfo: this.cameraInfo });
         break;
       case 1:
         fireEvent(this, "delete-camera", { cameraInfo: this.cameraInfo });

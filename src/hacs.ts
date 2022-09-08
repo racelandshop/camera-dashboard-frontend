@@ -8,7 +8,7 @@ import { localize } from "./localize/localize";
 import { ProvideHassLitMixin } from "../homeassistant-frontend/src/mixins/provide-hass-lit-mixin";
 
 export class cameraDashboardElement extends ProvideHassLitMixin(LitElement) {
-  @property({ attribute: false }) public hacs!: Hacs;
+  @property({ attribute: false }) public hacs!: Hacs; //replace this with something else
 
   public connectedCallback() {
     super.connectedCallback();
