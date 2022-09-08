@@ -114,19 +114,36 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
             value=${this.cameraInfo.username}
           >
           </ha-textfield>
-          <ha-textfield
-            class="loginField"
-            label=${localize("form.password")}
-            value=${this.cameraInfo.password}
-            type="password"
-          >
-          </ha-textfield>
+          <div class="loginField">
+            <ha-textfield
+              label=${localize("form.password")}
+              value=${this.cameraInfo.password}
+              type="password"
+            >
+            </ha-textfield>
+            <ha-icon-button
+              toggles
+              .label=${`${this._unmaskedPassword ? "Hide" : "Show"} password`}
+              @click=${this._toggleUnmaskedPassword}
+              .path=${this._unmaskedPassword ? mdiEyeOff : mdiEye}
+            ></ha-icon-button>
+          </div>
         </div>
 
-        <ha-switch class="editField " label=${localize("form.record_video_of_camera")}
-          >TESTE</ha-switch
-        >
-        <ha-switch class="editField " label=${localize("form.advanced_options")}></ha-switch>
+        <div class="editField switch">
+          <span>${localize("form.record_video_of_camera")}</span>
+          <ha-switch label=${localize("form.record_video_of_camera")}
+            >${localize("form.record_video_of_camera")}</ha-switch
+          >
+        </div>
+
+        <div class="editField switch">
+          <span>${localize("form.advanced_options")}</span>
+          <ha-switch label=${localize("form.advanced_options")}
+            >${localize("form.advanced_options")}}</ha-switch
+          >
+        </div>
+
         ${!this.cameraInfo.advanced_options
           ? html`<ha-select
                 class="editFormulary"
@@ -202,6 +219,10 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           --mdc-typography-body2-font-size: 1em;
         }
 
+        ha-switch {
+          float: right;
+        }
+
         .editFormulary {
           margin-left: 10%;
           margin-right: 10%;
@@ -211,6 +232,11 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           margin-top: 1%;
           margin-bottom: 1%;
           width: 100%;
+        }
+
+        .editField.switch {
+          margin-top: 5%;
+          margin-bottom: 5%;
         }
 
         .loginField {
