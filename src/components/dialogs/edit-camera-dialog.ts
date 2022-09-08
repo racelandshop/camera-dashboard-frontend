@@ -148,7 +148,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
 
         ${!this.cameraInfo.advanced_options
           ? html`<ha-select
-                class="editFormulary"
+                class="editField"
                 label=${localize("form.authentication")}
                 value=${this.cameraInfo.authentication[0].toUpperCase() +
                 this.cameraInfo.authentication.substring(1)}
@@ -158,7 +158,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
                 )}</ha-select
               >
               <ha-select
-                class="editFormulary"
+                class="editField"
                 label=${localize("form.verify_ssl")}
                 value=${this.cameraInfo.verify_ssl}
               >
