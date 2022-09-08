@@ -17,7 +17,7 @@ import "../camera-brand-icon-button";
 import "../search-input-round";
 import "../../../homeassistant-frontend/src/components/ha-select";
 import "../../../homeassistant-frontend/src/components/ha-textfield";
-import "../../../homeassistant-frontend/src/components/ha-slider";
+import "../../../homeassistant-frontend/src/components/ha-selector/ha-selector-number";
 import "../../../homeassistant-frontend/src/components/ha-switch";
 import { localize } from "../../localize/localize";
 import { CameraConfiguration } from "../../data/types";
@@ -171,7 +171,21 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
                   (item) => html`<mwc-list-item value=${item}>${item}</mwc-list-item>`
                 )}</ha-select
               >
-              <ha-slider class="editField " id="selector" max="60" min="1"></ha-slider>`
+              <ha-selector-number
+                class="editField"
+                .hass=${this.hass}
+                .selector=${{
+                  number: {
+                    min: 1,
+                    max: 60,
+                    step: 1,
+                    mode: "slider",
+                    unit_of_measurement: "FPS",
+                  },
+                }}
+                .value=${this.cameraInfo.framerate}
+                .label=${localize("form.framerate")}
+              ></ha-selector-number>`
           : html``}
       </div>
     </ha-dialog>`;
