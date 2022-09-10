@@ -21,9 +21,9 @@
   },
   "form": {
     "integration": "Select type of Integration",
-    "camera_name": "Camera Name (Obligatory)",
-    "static_image_url": "Static Image URL",
-    "stream_url": "Stream URL",
+    "name": "Camera Name (Obligatory)",
+    "still_image_url": "Static Image URL",
+    "stream_source": "Stream URL",
     "username": "Username",
     "password": "Password",
     "record_video_of_camera": "Record Video of Camera",
@@ -36,9 +36,9 @@
     "framerate": "Framerate",
     "issues": {
       "missing_integration": "Select an integration type",
-      "camera_name": "Camera name is required",
+      "name": "Camera name is required",
       "duplicated_camera_name": "There is already a camera with that name",
-      "static_stream_url_missing": "No static or stream URL"
+      "static_stream_source_missing": "No static or stream URL"
     }
   }
 }

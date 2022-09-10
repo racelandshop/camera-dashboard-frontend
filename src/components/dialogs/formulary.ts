@@ -145,7 +145,7 @@ export class HuiCreateDialogCameraFormulary
       this.validIssue = localize("form.issues.missing_integration");
       return false;
     }
-    if (!this.data.camera_name) {
+    if (!this.data.name) {
       this.validIssue = localize("form.issues.camera_name");
       return false;
     }
@@ -153,8 +153,8 @@ export class HuiCreateDialogCameraFormulary
       this.validIssue = localize("form.issues.duplicated_camera_name");
       return false;
     }
-    if (!this.data.static_image_url && !this.data.stream_url) {
-      this.validIssue = localize("form.issues.static_stream_url_missing");
+    if (!this.data.still_image_url && !this.data.stream_source) {
+      this.validIssue = localize("form.issues.static_stream_source_missing");
       return false;
     }
     return true;

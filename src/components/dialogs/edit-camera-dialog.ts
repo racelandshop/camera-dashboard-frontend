@@ -7,7 +7,7 @@ import { classMap } from "lit/directives/class-map";
 import { customElement, property, state } from "lit/decorators";
 import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
-//import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
+import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
@@ -15,12 +15,10 @@ import { EditCameraDialogParams } from "../../helpers/show-edit-camera-dialog";
 import { fetchCameraInformation } from "../../data/websocket";
 import "../camera-brand-icon-button";
 import "../search-input-round";
-import "../../../homeassistant-frontend/src/components/ha-select";
-import "../../../homeassistant-frontend/src/components/ha-textfield";
-import "../../../homeassistant-frontend/src/components/ha-selector/ha-selector-number";
-import "../../../homeassistant-frontend/src/components/ha-switch";
+import "../../../homeassistant-frontend/src/components/ha-form/ha-form";
+import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { localize } from "../../localize/localize";
-import { CameraConfiguration } from "../../data/types";
+import { backEventOptions, schemaForm } from "../../data/types";
 
 @customElement("edit-camera-dialog")
 export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCameraDialogParams> {
@@ -30,17 +28,34 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
 
   @property({ attribute: false }) protected cameraInfo: any;
 
-  @state() private _unmaskedPassword = false;
-
   @state() private _params?: EditCameraDialogParams;
+
+  @property({ attribute: false }) backEvent!: backEventOptions;
+
+  @property({ attribute: false }) schema!: schemaForm;
 
   @state() private _currTabIndex = 0;
 
   public async showDialog(params: EditCameraDialogParams): Promise<void> {
+    const form_schema = {
+      header: { title: localize("common.add_camera") },
+      body: customSchema(["generic", "FFMPEG"]),
+      extra_options: customCameraExtraOptionSchema,
+      footer: {
+        accept: localize("common.edit_camera"),
+      },
+    };
+
     this._params = params;
+    this.schema = form_schema;
     this.dialogOpen = true;
     this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entity_id);
-    this.cameraInfo.advanced_options = false;
+
+    if (this.cameraInfo.authentication != undefined) {
+      this.cameraInfo.authentication =
+        this.cameraInfo.authentication[0].toUpperCase() +
+        this.cameraInfo.authentication.substring(1);
+    }
   }
 
   public closeDialog(): boolean {
@@ -50,25 +65,22 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
     return true;
   }
 
-  // <ha-select .label="integration"></ha-select
-  // fixedMenuPosition
-  // naturalMenuWidth
-  // .value=${this.value}
-  // .disabled=${this.disabled}
-  // @selected=${this._blueprintChanged}
-  // @closed=${stopPropagation}
-
   protected render(): TemplateResult {
-    console.log("the camera info is", this.cameraInfo);
+    console.log("The camera info is: ", this.cameraInfo);
+
     if (this.cameraInfo === undefined || !this.dialogOpen) {
       return html``;
     }
+
+    const schemaBody = this.schema.body;
+    const schemaExtraOptions = this.schema.extra_options;
+
     return html` <ha-dialog
       open
       scrimClickAction
       hideActions
-      @closed=${this.closeDialog}
       class=${classMap({ table: this._currTabIndex === 1 })}
+      @closed=${this.closeDialog}
     >
       <div class="cancel">
         <ha-svg-icon
@@ -79,120 +91,46 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
         ></ha-svg-icon>
       </div>
       <div class="header-text">${localize("common.edit_camera")}</div>
-
-      <div class="editFormulary">
-        <ha-select
-          class="editField"
-          label=${localize("form.integration")}
-          value=${this.cameraInfo.integration}
-        >
-          ${["generic", "FFMPEG"].map(
-            (item) => html`<mwc-list-item value=${item}>${item}</mwc-list-item>`
-          )}</ha-select
-        >
-        <ha-textfield
-          class="editField"
-          label=${localize("form.camera_name")}
-          value=${this.cameraInfo.name}
-          required
-        >
-        </ha-textfield>
-        <ha-textfield
-          class="editField"
-          label=${localize("form.static_image_url")}
-          value=${this.cameraInfo.still_image_url}
-        >
-        </ha-textfield>
-        <ha-textfield
-          class="editField"
-          label=${localize("form.stream_url")}
-          value=${this.cameraInfo.stream_url}
-        >
-        </ha-textfield>
-        <div class="editField">
-          <ha-textfield
-            class="loginField"
-            label=${localize("form.username")}
-            value=${this.cameraInfo.username}
-          >
-          </ha-textfield>
-          <div class="loginField">
-            <ha-textfield
-              label=${localize("form.password")}
-              value=${this.cameraInfo.password}
-              .type=${this._unmaskedPassword ? "text" : "password"}
-            >
-            </ha-textfield>
-            <ha-icon-button
-              toggles
-              .label=${`${this._unmaskedPassword ? "Hide" : "Show"} password`}
-              @click=${this._toggleUnmaskedPassword}
-              .path=${this._unmaskedPassword ? mdiEyeOff : mdiEye}
-            ></ha-icon-button>
-          </div>
-        </div>
-
-        <div class="editField switch">
-          <span>${localize("form.record_video_of_camera")}</span>
-          <ha-switch label=${localize("form.record_video_of_camera")}
-            >${localize("form.record_video_of_camera")}</ha-switch
-          >
-        </div>
-
-        <div class="editField switch">
-          <span>${localize("form.advanced_options")}</span>
-          <ha-switch label=${localize("form.advanced_options")}
-            >${localize("form.advanced_options")}}</ha-switch
-          >
-        </div>
-
-        ${!this.cameraInfo.advanced_options
-          ? html`<ha-select
-                class="editField"
-                label=${localize("form.authentication")}
-                value=${this.cameraInfo.authentication[0].toUpperCase() +
-                this.cameraInfo.authentication.substring(1)}
-              >
-                ${["Basic", "Digest"].map(
-                  (item) => html`<mwc-list-item value=${item}>${item}</mwc-list-item>`
-                )}</ha-select
-              >
-              <ha-select
-                class="editField"
-                label=${localize("form.verify_ssl")}
-                value=${this.cameraInfo.verify_ssl}
-              >
-                ${["True", "False"].map(
-                  (item) => html`<mwc-list-item value=${item}>${item}</mwc-list-item>`
-                )}</ha-select
-              >
-              <ha-select class="editField " label=${localize("form.rtsp_transport")}>
-                ${["TCP", "Option2"].map(
-                  (item) => html`<mwc-list-item value=${item}>${item}</mwc-list-item>`
-                )}</ha-select
-              >
-              <ha-selector-number
-                class="editField"
-                .hass=${this.hass}
-                .selector=${{
-                  number: {
-                    min: 1,
-                    max: 60,
-                    step: 1,
-                    mode: "slider",
-                    unit_of_measurement: "FPS",
-                  },
-                }}
-                .value=${this.cameraInfo.framerate}
-                .label=${localize("form.framerate")}
-              ></ha-selector-number>`
-          : html``}
       </div>
+
+      <ha-form
+            .hass=${this.hass}
+            .data=${this.cameraInfo}
+            .schema=${schemaBody}
+            .computeLabel=${this._computeLabelCallback}
+            @value-changed=${this._valueChanged}
+          ></ha-form>
+          ${
+            schemaExtraOptions && this.cameraInfo.advanced_options
+              ? html` <ha-form
+                  .hass=${this.hass}
+                  .data=${this.cameraInfo}
+                  .schema=${schemaExtraOptions}
+                  .computeLabel=${this._computeLabelCallback}
+                  @value-changed=${this._valueChanged}
+                ></ha-form>`
+              : html``
+          }
+        </div>
+        <div class="options">
+          <mwc-button class="button-confirm" @click=${this._accept}
+            >${this.schema.footer.accept}</mwc-button
+          >
+        </div>
     </ha-dialog>`;
   }
 
-  private _toggleUnmaskedPassword(): void {
-    this._unmaskedPassword = !this._unmaskedPassword;
+  private _computeLabelCallback = (schema: HaFormSchema) => {
+    return localize(`form.${schema.name}`);
+  };
+
+  private _valueChanged(ev: CustomEvent): void {
+    const config = ev.detail.value;
+    this.cameraInfo = { ...this.cameraInfo, ...config };
+  }
+
+  private async _accept() {
+    console.log("Not implemented");
   }
 
   static get styles(): CSSResultGroup {
@@ -231,35 +169,16 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           border-bottom: 1px solid var(--mdc-dialog-scroll-divider-color, rgba(0, 0, 0, 0.12));
         }
 
+        ha-form {
+          margin-left: 8%;
+          margin-right: 8%;
+        }
+
         ha-formfield {
           display: flex;
           height: 56px;
           align-items: center;
           --mdc-typography-body2-font-size: 1em;
-        }
-
-        ha-switch {
-          float: right;
-        }
-
-        .editFormulary {
-          margin-left: 10%;
-          margin-right: 10%;
-        }
-
-        .editField {
-          margin-top: 1%;
-          margin-bottom: 1%;
-          width: 100%;
-        }
-
-        .editField.switch {
-          margin-top: 5%;
-          margin-bottom: 5%;
-        }
-
-        .loginField {
-          width: 49%;
         }
 
         .button-confirm {
@@ -287,6 +206,11 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           width: 30px;
           height: 30px;
         }
+        .form {
+          margin-left: 10%;
+          margin-right: 10%;
+        }
+
         .header-text {
           font-family: "Roboto";
           font-style: normal;

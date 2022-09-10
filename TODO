@@ -50,11 +50,3 @@ In the advanced options toogle I can implement it in another (check enery dashbo
 ## In the edit camera info dialog:
 
 - Need to update/improve the CSS
-
-  - The password field needs to fit next to the username
-
-- Figure out how to make the icon for the password to appear
-- change the slider to also include the FPS number
-- Implement the "edit camera" button"
-- The switch are not appearing
-- Advanced options are not appearing

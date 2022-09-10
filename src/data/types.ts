@@ -47,8 +47,8 @@ export interface schemaForm {
 export interface CameraConfiguration {
   integration?: string;
   camera_name?: string;
-  static_image_url?: string;
-  stream_url?: string;
+  still_image_url?: string;
+  stream_source?: string;
   username?: string;
   password?: string;
   record_video_of_camera?: boolean;

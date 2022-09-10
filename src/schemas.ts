@@ -12,15 +12,15 @@ export const customSchema = memoizeOne((integrationOptions): HaFormSchema[] => [
     },
   },
   {
-    name: "camera_name",
+    name: "name",
     selector: { text: {} },
   },
   {
-    name: "static_image_url",
+    name: "still_image_url",
     selector: { text: {} },
   },
   {
-    name: "stream_url",
+    name: "stream_source",
     selector: { text: {} },
   },
   {
@@ -85,7 +85,7 @@ export const customCameraExtraOptionSchema = [
 
 export const modelSchema = [
   {
-    name: "camera_name",
+    name: "name",
     selector: { text: {} },
   },
   {
