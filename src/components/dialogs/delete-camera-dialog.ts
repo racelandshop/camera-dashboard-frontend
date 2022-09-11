@@ -1,8 +1,6 @@
 import "@material/mwc-tab-bar/mwc-tab-bar";
 import "@material/mwc-tab/mwc-tab";
 import "@material/mwc-button/mwc-button";
-import { localize } from "../../localize/localize";
-import { removeCamera } from "../../data/websocket";
 import { mdiCheckboxMarkedCircle, mdiDelete } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
@@ -12,7 +10,10 @@ import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_e
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
-import { DeleteCameraDialogParams } from "../../helpers/show-delete-camera-dialog"; //Why did I neede this function? TODO:
+import { DeleteCameraDialogParams } from "../../helpers/show-delete-camera-dialog";
+import { CameraConfiguration } from "../../data/types";
+import { removeCamera, fetchCameraInformation } from "../../data/websocket";
+import { localize } from "../../localize/localize";
 
 @customElement("delete-camera-dialog")
 export class HuiDeleteDialogCamera
@@ -23,16 +24,16 @@ export class HuiDeleteDialogCamera
 
   @state() private _params?: DeleteCameraDialogParams;
 
-  @state() private cameraInfo: any;
+  @state() private cameraInfo!: CameraConfiguration;
 
   @state() private _currTabIndex = 0;
 
   public async showDialog(params: DeleteCameraDialogParams): Promise<void> {
     this._params = params;
-    this.cameraInfo = this._params.cameraInfo;
+    this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entity_id);
   }
 
-  public closeDialog(): boolean {
+  public closeDialog(): void {
     this._params = undefined;
     fireEvent(this, "dialog-closed", { dialog: this.localName });
   }
@@ -48,6 +49,7 @@ export class HuiDeleteDialogCamera
         hideActions
         .heading=${localize("common.delete_camera")}
         class=${classMap({ table: this._currTabIndex === 1 })}
+        @closed=${this.closeDialog}
       >
         <div class="header" slot="heading">
           <ha-header-bar>
@@ -88,7 +90,7 @@ export class HuiDeleteDialogCamera
     if (ev) {
       ev.stopPropagation();
     }
-    removeCamera(this.hass, this.cameraInfo.entity_id);
+    removeCamera(this.hass, this.cameraInfo.id, this.cameraInfo.entity_id);
     this.closeDialog();
   }
 

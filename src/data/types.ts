@@ -39,23 +39,24 @@ export interface schemaForm {
   extra_options?: HaFormSchema[];
   cameraModelInfo?: cameraModel;
   footer: {
-    back: string;
+    back?: string;
     accept: string;
   };
 }
 
 export interface CameraConfiguration {
   integration?: string;
-  camera_name?: string;
+  name?: string;
   still_image_url?: string;
   stream_source?: string;
   username?: string;
   password?: string;
   record_video_of_camera?: boolean;
-  ip?: string;
+  id?: string;
   advanced_options?: string;
   authentication?: string;
   verify_ssl?: string;
   rtsp_transport?: string;
   framerate?: string;
+  entity_id: string;
 }
