@@ -149,7 +149,7 @@ export class HuiCreateDialogCameraFormulary
       this.validIssue = localize("form.issues.camera_name");
       return false;
     }
-    if (this.registeredCameras.includes(this.data.camera_name)) {
+    if (this.registeredCameras.includes(this.data.name)) {
       this.validIssue = localize("form.issues.duplicated_camera_name");
       return false;
     }

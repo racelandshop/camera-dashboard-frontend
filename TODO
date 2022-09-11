@@ -3,7 +3,7 @@ How will I load the css from the themes into this?
 ### Overall
 
 Add type hints for camera types
-Try aspecto with other screens (Is there a need to adapt it to small screens?)
+Fix aspect ration with other screens size (Is there a need to adapt it to small screens?)
 Review the the fire-events
 Review CSS (there are some place where the px measure might need to be switched to percentages)
 Add rounded edges for all the cards
@@ -38,15 +38,18 @@ In the advanced options toogle I can implement it in another (check enery dashbo
 
 ## In open model dialog
 
-- Fail safe when there is not models for that camera brand in the databse
+- Implement fail safe when there is not models for that camera brand in the database
 
 ## In formulary
 
 - Integration type -> Use SVG icon in before the selector
 - Icons in record Video of camera and more options are not appearing
 - In the autocomplete camera form (when picking one camera model, add information about the default 'door' i.e what comes after ":" . Also, if the IP has a 'door' ignore this parameter.
-- I can not add a camera if there are advanced options. Why?
 
 ## In the edit camera info dialog:
 
 - Need to update/improve the CSS
+
+## Backend Stuff:
+
+- When I remove the cameras if I restart HA right away it does not give time for the entity_registry to do its magic. I should implement a fail safe to remove these entities in the **init** (e.g entity_registry.remove_entity(entity_id)). I can check which entities I want to remove by comparing to the list (camera information in .storage folder)

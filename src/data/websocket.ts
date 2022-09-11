@@ -32,7 +32,7 @@ export const removeCamera = async (hass: HomeAssistant, id, entity_id) => {
   const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
     type: "raceland-camera-dashboard/remove_camera",
     entity_id: entity_id,
-    cam_id: id,
+    unique_id: id,
   });
   return response;
 };

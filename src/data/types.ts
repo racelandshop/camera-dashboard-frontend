@@ -52,7 +52,7 @@ export interface CameraConfiguration {
   username?: string;
   password?: string;
   record_video_of_camera?: boolean;
-  id?: string;
+  unique_id?: string;
   advanced_options?: string;
   authentication?: string;
   verify_ssl?: string;

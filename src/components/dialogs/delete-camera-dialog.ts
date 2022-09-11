@@ -90,7 +90,7 @@ export class HuiDeleteDialogCamera
     if (ev) {
       ev.stopPropagation();
     }
-    removeCamera(this.hass, this.cameraInfo.id, this.cameraInfo.entity_id);
+    removeCamera(this.hass, this.cameraInfo.unique_id, this.cameraInfo.entity_id);
     this.closeDialog();
   }
 

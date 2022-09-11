@@ -37,7 +37,7 @@ import {
   CameraConfiguration,
 } from "./data/types";
 import { showCreateCameraDialog } from "./helpers/show-create-camera-dialog";
-import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog ";
+import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog";
 import { showEditCameraDialog } from "./helpers/show-edit-camera-dialog";
 import { showModelOptionsDialog } from "./helpers/show-camera-models-dialog";
 import { showCameraDialog } from "./helpers/show-camera-form-dialog";
@@ -179,7 +179,7 @@ class cameraFrontend extends cameraDashboardElement {
 
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
-    console.log("Running updated with changedProps", changedProps);
+    //console.log("Running updated with changedProps", changedProps);
     const oldHass = changedProps.get("hass") as HomeAssistant | undefined;
     if (!oldHass) {
       return;

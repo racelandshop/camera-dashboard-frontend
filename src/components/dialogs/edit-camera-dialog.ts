@@ -12,13 +12,14 @@ import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import { EditCameraDialogParams } from "../../helpers/show-edit-camera-dialog";
-import { fetchCameraInformation } from "../../data/websocket";
+import { fetchCameraInformation, updateCameraInformation } from "../../data/websocket";
 import "../camera-brand-icon-button";
 import "../search-input-round";
 import "../../../homeassistant-frontend/src/components/ha-form/ha-form";
 import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { localize } from "../../localize/localize";
-import { backEventOptions, schemaForm } from "../../data/types";
+import { getCameraEntities } from "../../common";
+import { backEventOptions, schemaForm, cameraCard, cameraInfo } from "../../data/types";
 
 @customElement("edit-camera-dialog")
 export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCameraDialogParams> {
@@ -30,7 +31,11 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
 
   @state() private _params?: EditCameraDialogParams;
 
+  @property({ type: String }) protected validIssue?;
+
   @property({ attribute: false }) backEvent!: backEventOptions;
+
+  @property({ attribute: false }) protected registeredCameras!: Array<any>;
 
   @property({ attribute: false }) schema!: schemaForm;
 
@@ -50,11 +55,20 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
     this.schema = form_schema;
     this.dialogOpen = true;
     this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entity_id);
+    this.registeredCameras = getCameraEntities(this.hass.states).map(
+      (camera: cameraCard) => camera.name
+    );
 
-    if (this.cameraInfo.authentication != undefined) {
+    if (this.cameraInfo.authentication !== undefined) {
       this.cameraInfo.authentication =
         this.cameraInfo.authentication[0].toUpperCase() +
         this.cameraInfo.authentication.substring(1);
+    }
+
+    if (this.cameraInfo.verify_ssl != undefined) {
+      let verify_ssl = this.cameraInfo.verify_ssl;
+      verify_ssl = String(this.cameraInfo.verify_ssl);
+      this.cameraInfo.verify_ssl = verify_ssl[0].toUpperCase() + verify_ssl.substring(1);
     }
   }
 
@@ -66,8 +80,6 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
   }
 
   protected render(): TemplateResult {
-    console.log("The camera info is: ", this.cameraInfo);
-
     if (this.cameraInfo === undefined || !this.dialogOpen) {
       return html``;
     }
@@ -92,7 +104,8 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
       </div>
       <div class="header-text">${localize("common.edit_camera")}</div>
       </div>
-
+      ${this.validIssue ? html` <div class="form-issue">${this.validIssue}</div>` : html``}
+      <div class="form">
       <ha-form
             .hass=${this.hass}
             .data=${this.cameraInfo}
@@ -130,7 +143,45 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
   }
 
   private async _accept() {
-    console.log("Not implemented");
+    const valid = this.validInput();
+    if (valid === true) {
+      const camInfo = this.removeNull(this.cameraInfo);
+      const result = await updateCameraInformation(this.hass, camInfo);
+      if (result === true) {
+        this.closeDialog();
+        fireEvent(this, "update-camera-dashboard");
+      }
+    }
+  }
+
+  private validInput() {
+    if (!this.cameraInfo.integration) {
+      this.validIssue = localize("form.issues.missing_integration");
+      return false;
+    }
+    if (!this.cameraInfo.name) {
+      this.validIssue = localize("form.issues.camera_name");
+      return false;
+    }
+    if (this.registeredCameras.includes(this.cameraInfo.camera_name)) {
+      this.validIssue = localize("form.issues.duplicated_camera_name");
+      return false;
+    }
+    if (!this.cameraInfo.still_image_url && !this.cameraInfo.stream_source) {
+      this.validIssue = localize("form.issues.static_stream_source_missing");
+      return false;
+    }
+    return true;
+  }
+
+  private removeNull(cameraInfo): cameraInfo {
+    //Remove null keys in the dictionary (ensuring the data passes the checks in the backend. This is not the most elegant solution but it should work for now)
+    for (let [key, value] of Object.entries(cameraInfo)) {
+      if (value === null) {
+        delete cameraInfo[key];
+      }
+    }
+    return cameraInfo;
   }
 
   static get styles(): CSSResultGroup {
