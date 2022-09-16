@@ -7,6 +7,7 @@ export interface CameraFormsDialogParams {
   schema: schemaForm;
   formType: string;
   backEvent: backEventOptions;
+  cameraModelInfo?: cameraModel;
 }
 
 export const importCameraFormDialog = () => import("../components/dialogs/formulary");

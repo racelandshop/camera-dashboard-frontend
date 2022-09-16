@@ -17,7 +17,8 @@ export interface cameraBrand {
 
 export interface cameraModel {
   version: string;
-  options: Array<cameraOption>;
+  options: Map<string, cameraOption>;
+  supportChannels: boolean;
 }
 
 export interface cameraOption {
@@ -25,7 +26,6 @@ export interface cameraOption {
   source?: string;
   url?: string;
   prefix: string;
-  supportChannels: string;
 }
 
 export interface backEventOptions {
@@ -45,7 +45,9 @@ export interface schemaForm {
 }
 
 export interface CameraConfiguration {
-  integration?: string;
+  integration: string;
+  ip?: string;
+  number_of_cameras?: number;
   name?: string;
   still_image_url?: string;
   stream_source?: string;
@@ -58,5 +60,5 @@ export interface CameraConfiguration {
   verify_ssl?: string;
   rtsp_transport?: string;
   framerate?: string;
-  entity_id: string;
+  entity_id?: string;
 }

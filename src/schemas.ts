@@ -98,7 +98,7 @@ export const modelSchema = [
   },
   {
     name: "number_of_cameras",
-    selector: { text: {} },
+    selector: { text: { min: 0, max: 10 } },
   },
   {
     name: "ip",

@@ -38,7 +38,10 @@
       "missing_integration": "Select an integration type",
       "name": "Camera name is required",
       "duplicated_camera_name": "There is already a camera with that name",
-      "static_stream_source_missing": "No static or stream URL"
+      "static_stream_source_missing": "No static or stream URL",
+      "ip_missing": "No IP address provided",
+      "n_cameras": "Number of cameras is not valid"
+
     }
   }
 }

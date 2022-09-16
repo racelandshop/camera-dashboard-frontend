@@ -127,6 +127,14 @@ export class HuiCreateDialogCameraBrand
   }
 
   private _addCamera(cameraModelInfo) {
+    if (cameraModelInfo.supportChannels === false) {
+      const index = modelSchema.indexOf({
+        name: "number_of_cameras",
+        selector: { number: {} },
+      });
+      modelSchema.splice(index, 1);
+    }
+
     const form_schema = {
       header: { title: localize("common.add_camera") },
       body: modelSchema,
