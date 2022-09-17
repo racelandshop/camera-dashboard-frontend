@@ -260,10 +260,8 @@ export class HuiCreateDialogCameraFormulary
       const valid = this.validInput();
       if (valid === true) {
         const parsedData = this.parseAutoCompleteData();
-        console.log(parsedData);
         for (let i = 0; i < parsedData.length; i++) {
-          const results = sendCameraInformation(this.hass, parsedData[i]);
-          console.log(results);
+          await sendCameraInformation(this.hass, parsedData[i]);
         }
 
         this.closeDialog();
