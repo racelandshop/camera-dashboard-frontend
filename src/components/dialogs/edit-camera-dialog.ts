@@ -44,7 +44,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
   public async showDialog(params: EditCameraDialogParams): Promise<void> {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: customSchema(["generic", "FFMPEG"]),
+      body: customSchema(["generic", "MJPEG"]),
       extra_options: customCameraExtraOptionSchema,
       footer: {
         accept: localize("common.edit_camera"),

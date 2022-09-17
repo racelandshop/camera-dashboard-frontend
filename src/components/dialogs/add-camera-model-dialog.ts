@@ -158,7 +158,7 @@ export class HuiCreateDialogCameraBrand
   private _addCustomCamera(ev) {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: customSchema(["generic", "FFMPEG"]),
+      body: customSchema(["generic", "MJPEG"]),
       extra_options: customCameraExtraOptionSchema,
       footer: {
         back: localize("common.go_back"),

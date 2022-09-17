@@ -54,3 +54,8 @@ In the advanced options toogle I can implement it in another (check enery dashbo
 ## Backend Stuff:
 
 - When I remove the cameras if I restart HA right away it does not give time for the entity_registry to do its magic. I should implement a fail safe to remove these entities in the **init** (e.g entity_registry.remove_entity(entity_id)). I can check which entities I want to remove by comparing to the list (camera information in .storage folder)
+
+# Dynamic forms:
+
+Are all the features of generic cameras supported by mjpeg (or implement some feature if it makes sense in this context)
+Fix MJPEG stream (what is the base link?)
