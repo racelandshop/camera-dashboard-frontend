@@ -86,12 +86,19 @@ export class HuiDeleteDialogCamera
     this.closeDialog();
   }
 
-  private _delete(ev?: Event) {
+  private async _delete(ev?: Event) {
     if (ev) {
       ev.stopPropagation();
     }
-    removeCamera(this.hass, this.cameraInfo.unique_id, this.cameraInfo.entity_id);
-    this.closeDialog();
+    const result = await removeCamera(
+      this.hass,
+      this.cameraInfo.unique_id,
+      this.cameraInfo.entity_id
+    );
+    if (result === true) {
+      this.closeDialog();
+      fireEvent(this, "update-camera-dashboard");
+    }
   }
 
   static get styles(): CSSResultGroup {

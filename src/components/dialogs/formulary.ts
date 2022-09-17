@@ -265,6 +265,7 @@ export class HuiCreateDialogCameraFormulary
         }
 
         this.closeDialog();
+        fireEvent(this, "update-camera-dashboard");
       }
     }
   }

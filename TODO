@@ -15,8 +15,6 @@ DO/Verify translations. Duplicated keys in translation
 
 I also have to be carefull to update the frontned information when If the entity Id is updated
 
-In the advanced options toogle I can implement it in another (check enery dashboard)
-
 ### In main
 
 - The search bar can be used to search for more stuff in the camera information (disccus at the end)
@@ -35,10 +33,6 @@ In the advanced options toogle I can implement it in another (check enery dashbo
 ## In the new-camera-card
 
 - Also highligh text upon hover
-
-## In open model dialog
-
-- Implement fail safe when there is not models for that camera brand in the database
 
 ## In formulary
 
