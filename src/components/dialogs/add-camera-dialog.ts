@@ -9,7 +9,6 @@ import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
 import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
-import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
@@ -50,7 +49,7 @@ export class HuiCreateDialogCamera
     }
     let filteredBrands = cameraDatabase;
     const options: Fuse.IFuseOptions<cameraBrand> = {
-      keys: ["name"], //Add the possibility to search for model or other keys (?)
+      keys: ["name"], //Add the possibility to search for model or other keys
       isCaseSensitive: false,
       minMatchCharLength: 1,
       threshold: 0.2,
@@ -205,11 +204,6 @@ export class HuiCreateDialogCamera
           display: block;
           width: 50%;
           margin-right: 10%;
-          /* margin-left: 20px;
-          margin-bottom: 20px;
-          padding: 5px 5px 5px 5px;
-          border: 1px solid #4109a8;
-          border-radius: 16px; */
         }
 
         .add-camera {

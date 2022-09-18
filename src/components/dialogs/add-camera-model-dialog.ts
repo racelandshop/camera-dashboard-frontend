@@ -10,17 +10,9 @@ import Fuse from "fuse.js";
 import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
 import "../search-input-round";
-// import { computeDomain } from "../../../../common/entity/compute_domain";
-// import { computeStateName } from "../../../../common/entity/compute_state_name";
-// import { DataTableRowData } from "../../../../components/data-table/ha-data-table";
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
-// import type { LovelaceViewConfig } from "../../../../data/lovelace";
-// import type { HassDialog } from "../../../../dialogs/make-dialog-manager";
-// import { haStyleDialog } from "../../../../resources/styles";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
-// import "./hui-card-picker";
-// import "./hui-entity-picker-table";
 import { CameraModelsDialogParams } from "../../helpers/show-camera-models-dialog";
 import { cameraBrand, cameraModel } from "../../data/types";
 import { customSchema, customCameraExtraOptionSchema, modelSchema } from "../../schemas";
@@ -42,8 +34,6 @@ export class HuiCreateDialogCameraBrand
 
   public async showDialog(params: CameraModelsDialogParams): Promise<void> {
     this.modelDatabase = params.modelsInfo;
-    // const [view] = params.path;
-    // this._viewConfig = params.lovelaceConfig.views[view];
   }
 
   public closeDialog(): boolean {

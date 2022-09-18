@@ -2,33 +2,17 @@ import { mdiPlus } from "@mdi/js";
 import { html, PropertyValues, TemplateResult, css } from "lit";
 import { customElement, property, query, state } from "lit/decorators";
 import { applyThemesOnElement } from "../homeassistant-frontend/src/common/dom/apply_themes_on_element";
-import { mainWindow } from "../homeassistant-frontend/src/common/dom/get_main_window";
 import { fireEvent } from "../homeassistant-frontend/src/common/dom/fire_event";
-import { isNavigationClick } from "../homeassistant-frontend/src/common/dom/is-navigation-click";
-import { navigate } from "../homeassistant-frontend/src/common/navigate";
 import { makeDialogManager } from "../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import "../homeassistant-frontend/src/resources/ha-style";
 import "../homeassistant-frontend/src/components/search-input";
 import "../homeassistant-frontend/src/components/ha-fab";
 import { HomeAssistant, Route } from "../homeassistant-frontend/src/types";
-import "./components/dialogs/hacs-event-dialog";
 import "./components/raceland-camera-card";
 import "./components/new-camera-card";
-import { HacsDialogEvent, HacsDispatchEvent, LocationChangedEvent } from "./data/common";
-import {
-  getConfiguration,
-  getCritical,
-  getLovelaceConfiguration,
-  getRemovedRepositories,
-  getRepositories,
-  getStatus,
-  websocketSubscription,
-} from "./data/websocket";
-import type { HaFormSchema } from "./../homeassistant-frontend/src/components/ha-form/types";
 import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
 import { cameraDashboardElement } from "./hacs";
-import "./hacs-router";
 import {
   cameraCard,
   cameraModel,
@@ -41,8 +25,6 @@ import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog";
 import { showEditCameraDialog } from "./helpers/show-edit-camera-dialog";
 import { showModelOptionsDialog } from "./helpers/show-camera-models-dialog";
 import { showCameraDialog } from "./helpers/show-camera-form-dialog";
-// import { HacsStyles } from "./styles/hacs-common-style";
-// import { hacsStyleVariables } from "./styles/variables";
 import cameraDatabase from "./data/camera_database.json";
 import { localize } from "./localize/localize";
 import { getCameraEntities } from "./common";
@@ -120,113 +102,17 @@ class cameraFrontend extends cameraDashboardElement {
       showEditCameraDialog(this, { cameraInfo: ev.detail.cameraInfo });
     });
 
-    // websocketSubscription(
-    //   this.hass,
-    //   () => this._updateProperties("configuration"),
-    //   HacsDispatchEvent.CONFIG
-    // );
-
-    // websocketSubscription(
-    //   this.hass,
-    //   () => this._updateProperties("status"),
-    //   HacsDispatchEvent.STATUS
-    // );
-
-    // websocketSubscription(
-    //   this.hass,
-    //   () => this._updateProperties("status"),
-    //   HacsDispatchEvent.STAGE
-    // );
-
-    // websocketSubscription(
-    //   this.hass,
-    //   () => this._updateProperties("repositories"),
-    //   HacsDispatchEvent.REPOSITORY
-    // );
-
-    // this.hass.connection.subscribeEvents(
-    //   async () => this._updateProperties("lovelace"),
-    //   "lovelace_updated"
-    // );
-    // this._updateProperties();
-    // if (this.route.path === "") {
-    //   navigate("/hacs/entry", { replace: true });
-    // }
-
-    // window.addEventListener("haptic", (ev) => {
-    //   // @ts-ignore
-    //   fireEvent(window.parent, ev.type, ev.detail, {
-    //     bubbles: false,
-    //   });
-    // });
-
-    document.body.addEventListener("click", (ev) => {
-      const href = isNavigationClick(ev);
-      if (href) {
-        navigate(href);
-      }
-    });
-
-    mainWindow.addEventListener("location-changed", (ev) =>
-      // @ts-ignore
-      fireEvent(this, ev.type, ev.detail, {
-        bubbles: false,
-      })
-    );
-
     makeDialogManager(this, this.shadowRoot!);
   }
 
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
-    //console.log("Running updated with changedProps", changedProps);
     const oldHass = changedProps.get("hass") as HomeAssistant | undefined;
     if (!oldHass) {
       return;
     }
     if (oldHass.themes !== this.hass.themes) {
       this._applyTheme();
-    }
-  }
-
-  private async _updateProperties(prop = "all") {
-    //Likely uselles, remove later
-    const _updates: any = {};
-    const _fetch: any = {};
-
-    if (prop === "all") {
-      [
-        _fetch.repositories,
-        _fetch.configuration,
-        _fetch.status,
-        _fetch.critical,
-        _fetch.resources,
-        _fetch.removed,
-      ] = await Promise.all([
-        getRepositories(this.hass),
-        getConfiguration(this.hass),
-        getStatus(this.hass),
-        getCritical(this.hass),
-        getLovelaceConfiguration(this.hass),
-        getRemovedRepositories(this.hass),
-      ]);
-    } else if (prop === "configuration") {
-      _fetch.configuration = await getConfiguration(this.hass);
-    } else if (prop === "status") {
-      _fetch.status = await getStatus(this.hass);
-    } else if (prop === "repositories") {
-      _fetch.repositories = await getRepositories(this.hass);
-    } else if (prop === "lovelace") {
-      _fetch.resources = await getLovelaceConfiguration(this.hass);
-    }
-
-    Object.keys(_fetch).forEach((update) => {
-      if (_fetch[update] !== undefined) {
-        _updates[update] = _fetch[update];
-      }
-    });
-    if (_updates) {
-      this._updateHacs(_updates);
     }
   }
 
@@ -240,7 +126,7 @@ class cameraFrontend extends cameraDashboardElement {
     }
     let filteredCameras = cameras;
     const options: Fuse.IFuseOptions<cameraCard> = {
-      keys: ["name"], //Add the possibility to search for IP adresses, modelo, manufactor, etc (?)
+      keys: ["name"],
       isCaseSensitive: false,
       minMatchCharLength: 1,
       threshold: 0.2,
@@ -251,7 +137,7 @@ class cameraFrontend extends cameraDashboardElement {
   });
 
   protected render(): TemplateResult | void {
-    if (!this.hass || !this.hacs) {
+    if (!this.hass || !this.racelandDashoardData) {
       return html``;
     }
 
@@ -292,7 +178,7 @@ class cameraFrontend extends cameraDashboardElement {
   }
 
   private _handleSearchChange(ev: CustomEvent) {
-    //Check hui-card-picker more information is required
+    //Check hui-card-picker if more information is required
     this._filter = ev.detail.value;
   }
 
@@ -333,33 +219,6 @@ class cameraFrontend extends cameraDashboardElement {
         z-index: 1;
       }
     `;
-  }
-
-  private _showDialog(ev: HacsDialogEvent): void {
-    const dialogParams = ev.detail;
-    this._hacsDialog.active = true;
-    this._hacsDialog.params = dialogParams;
-    this.addEventListener("hacs-dialog-closed", () => (this._hacsDialog.active = false));
-  }
-
-  private _showDialogSecondary(ev: HacsDialogEvent): void {
-    const dialogParams = ev.detail;
-    this._hacsDialogSecondary.active = true;
-    this._hacsDialogSecondary.secondary = true;
-    this._hacsDialogSecondary.params = dialogParams;
-    this.addEventListener(
-      "hacs-secondary-dialog-closed",
-      () => (this._hacsDialogSecondary.active = false)
-    );
-  }
-
-  private _setRoute(ev: LocationChangedEvent): void {
-    if (!ev.detail?.route) {
-      return;
-    }
-    this.route = ev.detail.route;
-    navigate(this.route.path, { replace: true });
-    this.requestUpdate();
   }
 
   private _applyTheme() {

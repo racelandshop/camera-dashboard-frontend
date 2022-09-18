@@ -1,33 +1,25 @@
 import { LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators";
 import { Hacs } from "./data/hacs";
-import { sectionsEnabled } from "./panels/hacs-sections";
-import { addedToLovelace } from "./tools/added-to-lovelace";
-import { HacsLogger } from "./tools/hacs-logger";
 import { localize } from "./localize/localize";
 import { ProvideHassLitMixin } from "../homeassistant-frontend/src/mixins/provide-hass-lit-mixin";
 
 export class cameraDashboardElement extends ProvideHassLitMixin(LitElement) {
-  @property({ attribute: false }) public hacs!: Hacs; //replace this with something else
+  //Left this file as is might be usefull for future use
+  @property({ attribute: false }) public racelandDashoardData!: Hacs; //replace this with something else
 
   public connectedCallback() {
     super.connectedCallback();
 
-    if (this.hacs === undefined) {
-      this.hacs = {
+    if (this.racelandDashoardData === undefined) {
+      this.racelandDashoardData = {
         language: "en",
-        messages: [],
         updates: [],
         resources: [],
-        repositories: [],
         removed: [],
         sections: [],
-        configuration: {} as any,
-        status: {} as any,
-        addedToLovelace,
         localize: (string: string, replace?: Record<string, any>) =>
-          localize(this.hacs?.language || "en", string, replace),
-        log: new HacsLogger(),
+          localize(this.racelandDashoardData?.language || "en", string, replace),
       };
     }
 
@@ -40,20 +32,23 @@ export class cameraDashboardElement extends ProvideHassLitMixin(LitElement) {
     let shouldUpdate = false;
 
     Object.keys(obj).forEach((key) => {
-      if (JSON.stringify(this.hacs[key]) !== JSON.stringify(obj[key])) {
+      if (JSON.stringify(this.racelandDashoardData[key]) !== JSON.stringify(obj[key])) {
         shouldUpdate = true;
       }
     });
 
     if (shouldUpdate) {
-      this.hacs = { ...this.hacs, ...obj };
+      this.racelandDashoardData = { ...this.racelandDashoardData, ...obj };
     }
   }
 
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
-    if (this.hacs.language && this.hacs.configuration) {
-      this.hacs.sections = sectionsEnabled(this.hacs.language, this.hacs.configuration);
+    if (this.racelandDashoardData.language && this.racelandDashoardData.configuration) {
+      this.racelandDashoardData.sections = sectionsEnabled(
+        this.racelandDashoardData.language,
+        this.racelandDashoardData.configuration
+      );
     }
   }
 }

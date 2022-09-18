@@ -1,7 +1,7 @@
 import "@material/mwc-tab-bar/mwc-tab-bar";
 import "@material/mwc-tab/mwc-tab";
 import "@material/mwc-button/mwc-button";
-import { mdiClose, mdiEyeOff, mdiEye } from "@mdi/js";
+import { mdiClose } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map";
 import { customElement, property, state } from "lit/decorators";
@@ -176,7 +176,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
 
   private removeNull(cameraInfo): cameraInfo {
     //Remove null keys in the dictionary (ensuring the data passes the checks in the backend. This is not the most elegant solution but it should work for now)
-    for (let [key, value] of Object.entries(cameraInfo)) {
+    for (const [key, value] of Object.entries(cameraInfo)) {
       if (value === null) {
         delete cameraInfo[key];
       }

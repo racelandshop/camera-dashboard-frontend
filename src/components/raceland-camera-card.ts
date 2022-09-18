@@ -1,6 +1,6 @@
 import "@material/mwc-button/mwc-button";
 import "@material/mwc-button/mwc-button";
-import { mdiCamera, mdiRecord } from "@mdi/js";
+import { mdiCamera } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
 import "../../homeassistant-frontend/src/components/ha-card";
@@ -11,7 +11,6 @@ import "../../homeassistant-frontend/src/components/button-recorder";
 import "./camera-button-menu";
 import { HomeAssistant } from "../../homeassistant-frontend/src/types";
 import { HacsStyles } from "../styles/hacs-common-style";
-import "./hacs-link";
 
 @customElement("raceland-camera-card")
 export class racelandCameraCard extends LitElement {
