@@ -9,15 +9,16 @@ import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
 import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
-import "../search-input-round";
+import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
-import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import { CameraModelsDialogParams } from "../../helpers/show-camera-models-dialog";
 import { cameraBrand, cameraModel } from "../../data/types";
 import { customSchema, customCameraExtraOptionSchema, modelSchema } from "../../schemas";
-import "../camera-model-icon-button";
+import { defaultIntegration, cameraIntegrations } from "../../common";
 import { localize } from "../../localize/localize";
+import "../camera-model-icon-button";
+import "../search-input-round";
 
 @customElement("camera-brand-dialog")
 export class HuiCreateDialogCameraBrand
@@ -137,7 +138,7 @@ export class HuiCreateDialogCameraBrand
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: cameraModelInfo,
       schema: form_schema,
-      data: {},
+      data: { integration: defaultIntegration },
       formType: "brand_camera",
       backEvent: { event_name: "open-camera-brand-dialog", modelDatabase: this.modelDatabase },
     });
@@ -148,7 +149,7 @@ export class HuiCreateDialogCameraBrand
   private _addCustomCamera(ev) {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: customSchema(["generic", "MJPEG"]),
+      body: customSchema(cameraIntegrations),
       extra_options: customCameraExtraOptionSchema,
       footer: {
         back: localize("common.go_back"),
@@ -159,7 +160,7 @@ export class HuiCreateDialogCameraBrand
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: {} as cameraModel,
       schema: form_schema,
-      data: {},
+      data: { integration: defaultIntegration },
       formType: "custom_camera",
       backEvent: { event_name: "open-camera-brand-dialog", modelDatabase: this.modelDatabase },
     });
@@ -248,11 +249,6 @@ export class HuiCreateDialogCameraBrand
           display: block;
           width: 50%;
           margin-right: 10%;
-          /* margin-left: 20px;
-          margin-bottom: 20px;
-          padding: 5px 5px 5px 5px;
-          border: 1px solid #4109a8;
-          border-radius: 16px; */
         }
 
         .add-camera {

@@ -1,25 +1,15 @@
 import { mdiPlus } from "@mdi/js";
 import { html, PropertyValues, TemplateResult, css } from "lit";
-import { customElement, property, query, state } from "lit/decorators";
-import { applyThemesOnElement } from "../homeassistant-frontend/src/common/dom/apply_themes_on_element";
-import { fireEvent } from "../homeassistant-frontend/src/common/dom/fire_event";
-import { makeDialogManager } from "../homeassistant-frontend/src/dialogs/make-dialog-manager";
+import { customElement, property, state } from "lit/decorators";
+import memoizeOne from "memoize-one";
+import Fuse from "fuse.js";
 import "../homeassistant-frontend/src/resources/ha-style";
 import "../homeassistant-frontend/src/components/search-input";
 import "../homeassistant-frontend/src/components/ha-fab";
+import { applyThemesOnElement } from "../homeassistant-frontend/src/common/dom/apply_themes_on_element";
+import { fireEvent } from "../homeassistant-frontend/src/common/dom/fire_event";
+import { makeDialogManager } from "../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { HomeAssistant, Route } from "../homeassistant-frontend/src/types";
-import "./components/raceland-camera-card";
-import "./components/new-camera-card";
-import memoizeOne from "memoize-one";
-import Fuse from "fuse.js";
-import { cameraDashboardElement } from "./hacs";
-import {
-  cameraCard,
-  cameraModel,
-  backEventOptions,
-  schemaForm,
-  CameraConfiguration,
-} from "./data/types";
 import { showCreateCameraDialog } from "./helpers/show-create-camera-dialog";
 import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog";
 import { showEditCameraDialog } from "./helpers/show-edit-camera-dialog";
@@ -28,13 +18,24 @@ import { showCameraDialog } from "./helpers/show-camera-form-dialog";
 import cameraDatabase from "./data/camera_database.json";
 import { localize } from "./localize/localize";
 import { getCameraEntities } from "./common";
+import "./components/raceland-camera-card";
+import "./components/new-camera-card";
+import { cameraDashboardElement } from "./hacs";
+import {
+  cameraInfo,
+  cameraCard,
+  cameraModel,
+  backEventOptions,
+  schemaForm,
+  CameraConfiguration,
+} from "./data/types";
 
 declare global {
   // for fire event
   interface HASSDomEvents {
     "add-new-camera": undefined;
-    "delete-camera": { cameraInfo: any }; //TODO: add type hint
-    "edit-camera": { cameraInfo: any };
+    "delete-camera": { cameraInfo: cameraInfo };
+    "edit-camera": { cameraInfo: cameraInfo };
     "open-camera-brand-dialog": {
       modelsInfo?: Array<cameraModel>;
     };
@@ -160,7 +161,7 @@ class cameraFrontend extends cameraDashboardElement {
         ${filteredCameras.length === 0
           ? html`<new-camera-card .hass=${this.hass} .narrow=${this.narrow}> </new-camera-card>`
           : filteredCameras.map(
-              (cam_info) =>
+              (cam_info: cameraInfo) =>
                 html` <raceland-camera-card
                   .hass=${this.hass}
                   .narrow=${this.narrow}

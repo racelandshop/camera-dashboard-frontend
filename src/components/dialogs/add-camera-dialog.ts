@@ -1,4 +1,3 @@
-import "@material/mwc-tab-bar/mwc-tab-bar";
 import "@material/mwc-tab/mwc-tab";
 import "@material/mwc-button/mwc-button";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
@@ -9,15 +8,16 @@ import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
 import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
+import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
-import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import { CreateCameraDialogParams } from "../../helpers/show-create-camera-dialog";
 import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { cameraBrand, cameraModel } from "../../data/types";
+import { localize } from "../../localize/localize";
+import { defaultIntegration, cameraIntegrations } from "../../common";
 import "../camera-brand-icon-button";
 import "../search-input-round";
-import { localize } from "../../localize/localize";
 
 @customElement("add-camera-dialog")
 export class HuiCreateDialogCamera
@@ -122,10 +122,10 @@ export class HuiCreateDialogCamera
     });
   }
 
-  private _addCustomCamera(ev) {
+  private _addCustomCamera() {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: customSchema(["generic", "MJPEG"]),
+      body: customSchema(cameraIntegrations),
       extra_options: customCameraExtraOptionSchema,
       footer: {
         back: localize("common.go_back"),
@@ -136,7 +136,7 @@ export class HuiCreateDialogCamera
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: {} as cameraModel,
       schema: form_schema,
-      data: {},
+      data: { integration: defaultIntegration },
       formType: "custom_camera",
       backEvent: { event_name: "add-new-camera" },
     });
@@ -250,9 +250,6 @@ export class HuiCreateDialogCamera
           text-decoration: none;
         }
 
-        mwc-tab-bar {
-          border-bottom: 1px solid var(--mdc-dialog-scroll-divider-color, rgba(0, 0, 0, 0.12));
-        }
         .cancel-icon {
           float: right;
           width: 40px;

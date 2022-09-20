@@ -1,9 +1,8 @@
-//TODO typehint key and value
 import { cameraInfo } from "./data/types";
 
 export function getCameraEntities(states) {
   const cameras: cameraInfo[] = [];
-  for (let [key, value] of Object.entries(states)) {
+  for (const [key, value] of Object.entries(states)) {
     if (computeDomain(key) === "camera") {
       cameras.push({
         name: value.attributes.friendly_name,
@@ -18,3 +17,7 @@ export function getCameraEntities(states) {
 export function computeDomain(entity: string): string {
   return entity.split(".")[0];
 }
+
+export const defaultIntegration = "generic";
+
+export const cameraIntegrations = ["generic", "MJPEG"];

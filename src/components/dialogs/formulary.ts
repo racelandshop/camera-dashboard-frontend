@@ -6,16 +6,16 @@ import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
 import { mdiClose, mdiChevronLeft } from "@mdi/js";
 import { classMap } from "lit/directives/class-map";
-import type { HaFormSchema } from ".../../../homeassistant-frontend/src/components/ha-form/types";
-import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
-import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
-import "../search-input-round";
 import "../../../homeassistant-frontend/src/components/ha-dialog";
 import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import "../../../homeassistant-frontend/src/components/ha-form/ha-form";
 import "../../../homeassistant-frontend/src/components/ha-checkbox";
+import type { HaFormSchema } from ".../../../homeassistant-frontend/src/components/ha-form/types";
+import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
+import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import "../camera-model-icon-button";
+import "../search-input-round";
 import { getCameraEntities } from "../../common";
 import { sendCameraInformation } from "../../data/websocket";
 import {
@@ -47,11 +47,11 @@ export class HuiCreateDialogCameraFormulary
 
   @property({ attribute: false }) schema!: schemaForm;
 
-  @property({ type: String }) protected validIssue?;
-
   @property({ attribute: false }) protected registeredCameras!: Array<any>;
 
   @state() private _currTabIndex = 0;
+
+  @state() protected validIssue: string | undefined;
 
   showDialog(params: CameraFormsDialogParams) {
     this.schema = params.schema;
@@ -171,7 +171,10 @@ export class HuiCreateDialogCameraFormulary
       return false;
     }
 
-    if (isNaN(Number(this.data.number_of_cameras)) || this.data.number_of_cameras <= 0) {
+    if (
+      isNaN(Number(this.data.number_of_cameras)) ||
+      (this.data.number_of_cameras !== undefined && this.data.number_of_cameras <= 0)
+    ) {
       this.validIssue = localize("form.issues.n_cameras");
       return false;
     }
@@ -197,6 +200,7 @@ export class HuiCreateDialogCameraFormulary
     let stream_url = undefined;
     let static_url = undefined;
     if (this.cameraModelInfo?.options.stream !== undefined) {
+      //TODO
       stream_url =
         this.cameraModelInfo?.options.stream.prefix +
         this.data.ip +

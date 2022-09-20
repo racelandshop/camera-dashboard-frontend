@@ -8,18 +8,18 @@ import { customElement, property, state } from "lit/decorators";
 import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
 import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
 import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
-import "../../../homeassistant-frontend/src/components/ha-dialog";
-import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
 import { EditCameraDialogParams } from "../../helpers/show-edit-camera-dialog";
-import { fetchCameraInformation, updateCameraInformation } from "../../data/websocket";
-import "../camera-brand-icon-button";
-import "../search-input-round";
+import "../../../homeassistant-frontend/src/components/ha-dialog";
+import "../../../homeassistant-frontend/src/components/ha-header-bar";
 import "../../../homeassistant-frontend/src/components/ha-form/ha-form";
+import { fetchCameraInformation, updateCameraInformation } from "../../data/websocket";
 import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { localize } from "../../localize/localize";
-import { getCameraEntities } from "../../common";
+import { getCameraEntities, cameraIntegrations } from "../../common";
 import { backEventOptions, schemaForm, cameraCard, cameraInfo } from "../../data/types";
+import "../camera-brand-icon-button";
+import "../search-input-round";
 
 @customElement("edit-camera-dialog")
 export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCameraDialogParams> {
@@ -31,8 +31,6 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
 
   @state() private _params?: EditCameraDialogParams;
 
-  @property({ type: String }) protected validIssue?;
-
   @property({ attribute: false }) backEvent!: backEventOptions;
 
   @property({ attribute: false }) protected registeredCameras!: Array<any>;
@@ -41,16 +39,17 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
 
   @state() private _currTabIndex = 0;
 
+  @state() protected validIssue: string | undefined;
+
   public async showDialog(params: EditCameraDialogParams): Promise<void> {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: customSchema(["generic", "MJPEG"]),
+      body: customSchema(cameraIntegrations),
       extra_options: customCameraExtraOptionSchema,
       footer: {
         accept: localize("common.edit_camera"),
       },
     };
-
     this._params = params;
     this.schema = form_schema;
     this.dialogOpen = true;
