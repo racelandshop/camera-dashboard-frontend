@@ -46,8 +46,7 @@ export class racelandCameraCard extends LitElement {
 
   private more_info(ev) {
     const entityId = this.cameraInfo.entityID;
-    console.log("Firing event for camera", entityId);
-    fireEvent(this, "hass-more-info", { entityId });
+    fireEvent(this, "more-info-camera", { entityId: entityId });
   }
 
   private handleRecord(ev) {
@@ -69,6 +68,9 @@ export class racelandCameraCard extends LitElement {
           padding: 1% 1% 1% 1%;
           height: 100%;
           font-size: 1.2rem;
+        }
+        ha-svg-icon {
+          cursor: pointer;
         }
         .top-row {
           width: 100%;

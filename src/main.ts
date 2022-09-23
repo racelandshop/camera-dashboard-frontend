@@ -30,6 +30,8 @@ import {
   CameraConfiguration,
 } from "./data/types";
 
+import { showDialog } from "../frontend-release/src/dialogs/make-dialog-manager";
+
 declare global {
   // for fire event
   interface HASSDomEvents {
@@ -58,7 +60,7 @@ class cameraFrontend extends cameraDashboardElement {
 
   @property({ attribute: false }) public route!: Route;
 
-  @property({ attribute: false }) public registeredCameras!: any; //This can be part of the "hacs" object passed between dialogs.
+  @property({ attribute: false }) public registeredCameras!: any;
 
   @state() private _filter = "";
 
@@ -70,6 +72,10 @@ class cameraFrontend extends cameraDashboardElement {
     super.firstUpdated(changedProps);
 
     this._applyTheme();
+
+    this.addEventListener("more-info-camera", (ev) => {
+      this._handleMoreInfoCamera(ev);
+    });
 
     this.addEventListener("update-camera-dashboard", () => {
       this._updateCameraDashboard();
@@ -104,6 +110,18 @@ class cameraFrontend extends cameraDashboardElement {
     });
 
     makeDialogManager(this, this.shadowRoot!);
+  }
+
+  private async _handleMoreInfoCamera(ev) {
+    showDialog(
+      this,
+      this.shadowRoot!,
+      "ha-more-info-dialog",
+      {
+        entityId: ev.detail.entityId,
+      },
+      () => import("../frontend-release/src/dialogs/more-info/ha-more-info-dialog")
+    );
   }
 
   protected updated(changedProps: PropertyValues) {
