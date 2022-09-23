@@ -1,5 +1,5 @@
 import memoizeOne from "memoize-one";
-import type { HaFormSchema } from "../homeassistant-frontend/src/components/ha-form/types";
+import type { HaFormSchema } from "../frontend-release/src/components/ha-form/types";
 
 export const customSchema = memoizeOne((integrationOptions): HaFormSchema[] => [
   {
@@ -64,7 +64,7 @@ export const customCameraExtraOptionSchema = [
     name: "rtsp_transport",
     selector: {
       select: {
-        options: ["TCP", "Option2"],
+        options: ["None", "tcp", "udp", "udp_multicast", "http"],
         mode: "dropdown",
       },
     },

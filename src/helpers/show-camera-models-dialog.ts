@@ -1,4 +1,4 @@
-import { fireEvent } from "../../homeassistant-frontend/src/common/dom/fire_event";
+import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
 import { cameraModel } from "../data/types";
 
 export interface CameraModelsDialogParams {

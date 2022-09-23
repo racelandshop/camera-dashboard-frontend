@@ -3,20 +3,22 @@ import "@material/mwc-button/mwc-button";
 import { mdiCamera } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import "../../homeassistant-frontend/src/components/ha-card";
-import "../../homeassistant-frontend/src/components/ha-chip";
-import "../../homeassistant-frontend/src/components/ha-icon";
-import "../../homeassistant-frontend/src/components/ha-svg-icon";
-import "../../homeassistant-frontend/src/components/button-recorder";
+import "../../frontend-release/src/components/ha-card";
+import "../../frontend-release/src/components/ha-chip";
+import "../../frontend-release/src/components/ha-icon";
+import "../../frontend-release/src/components/ha-svg-icon";
+import "../../frontend-release/src/components/button-recorder";
+import { HomeAssistant } from "../../frontend-release/src/types";
+import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
 import "./camera-button-menu";
-import { HomeAssistant } from "../../homeassistant-frontend/src/types";
 import { HacsStyles } from "../styles/hacs-common-style";
+import { cameraInfo } from "../data/types";
 
 @customElement("raceland-camera-card")
 export class racelandCameraCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
 
-  @property({ type: String }) public cameraInfo; //add type hints with an interface
+  @property({ attribute: false }) public cameraInfo!: cameraInfo;
 
   @property({ type: Boolean }) public record!: boolean;
 
@@ -32,10 +34,20 @@ export class racelandCameraCard extends LitElement {
             .cameraInfo=${this.cameraInfo}
           ></camera-button-menu>
         </div>
-        <ha-svg-icon class="main-camera-icon" path=${mdiCamera}></ha-svg-icon>
+        <ha-svg-icon
+          class="main-camera-icon"
+          path=${mdiCamera}
+          @click=${this.more_info}
+        ></ha-svg-icon>
         <div class="card-title">${this.cameraInfo.name}</div>
       </ha-card>
     `;
+  }
+
+  private more_info(ev) {
+    const entityId = this.cameraInfo.entityID;
+    console.log("Firing event for camera", entityId);
+    fireEvent(this, "hass-more-info", { entityId });
   }
 
   private handleRecord(ev) {
@@ -57,14 +69,6 @@ export class racelandCameraCard extends LitElement {
           padding: 1% 1% 1% 1%;
           height: 100%;
           font-size: 1.2rem;
-          /* Remove later
-          box-sizing: border-box;
-          justify-content: flex-end;
-          overflow: hidden;
-          border-style: solid;
-          border-width: min(var(--ha-card-border-width, 1px), 10px);
-          border-color: transparent;
-          border-radius: var(--ha-card-border-radius, 4px); */
         }
         .top-row {
           width: 100%;

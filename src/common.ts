@@ -6,7 +6,7 @@ export function getCameraEntities(states) {
     if (computeDomain(key) === "camera") {
       cameras.push({
         name: value.attributes.friendly_name,
-        entity_id: value.entity_id,
+        entityID: value.entity_id,
         state: value.state,
       });
     }

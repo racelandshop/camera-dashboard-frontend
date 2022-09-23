@@ -2,7 +2,7 @@ import { LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators";
 import { Hacs } from "./data/hacs";
 import { localize } from "./localize/localize";
-import { ProvideHassLitMixin } from "../homeassistant-frontend/src/mixins/provide-hass-lit-mixin";
+import { ProvideHassLitMixin } from "../frontend-release/src/mixins/provide-hass-lit-mixin";
 
 export class cameraDashboardElement extends ProvideHassLitMixin(LitElement) {
   //Left this file as is might be usefull for future use

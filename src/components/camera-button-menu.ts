@@ -5,10 +5,10 @@ import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators";
 import { mdiDotsVertical, mdiDelete } from "@mdi/js";
 import { localize } from "../localize/localize";
-import "../../homeassistant-frontend/src/components/ha-button-menu";
-import "../../homeassistant-frontend/src/components/ha-icon-button";
-import { HomeAssistant } from "../../homeassistant-frontend/src/types";
-import { fireEvent } from "../../homeassistant-frontend/src/common/dom/fire_event";
+import "../../frontend-release/src/components/ha-button-menu";
+import "../../frontend-release/src/components/ha-icon-button";
+import { HomeAssistant } from "../../frontend-release/src/types";
+import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
 
 @customElement("camera-button-menu")
 export class cameraButtonMenu extends LitElement {

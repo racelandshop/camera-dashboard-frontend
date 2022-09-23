@@ -1,8 +1,8 @@
-import type { HaFormSchema } from "../../homeassistant-frontend/src/components/ha-form/types";
+import type { HaFormSchema } from "../../frontend-release/src/components/ha-form/types";
 
 export interface cameraInfo {
   name: string;
-  entity_id: string;
+  entityID: string;
   state: string;
 }
 
@@ -60,5 +60,5 @@ export interface CameraConfiguration {
   verify_ssl?: string;
   rtsp_transport?: string;
   framerate?: string;
-  entity_id?: string;
+  entityID?: string;
 }

@@ -5,14 +5,14 @@ import { mdiClose } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map";
 import { customElement, property, state } from "lit/decorators";
-import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
-import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
-import type { HaFormSchema } from "../../../homeassistant-frontend/src/components/ha-form/types";
-import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
+import type { HassDialog } from "../../../frontend-release/src/dialogs/make-dialog-manager";
+import { fireEvent } from "../../../frontend-release/src/common/dom/fire_event";
+import type { HaFormSchema } from "../../../frontend-release/src/components/ha-form/types";
+import type { HomeAssistant } from "../../../frontend-release/src/types";
 import { EditCameraDialogParams } from "../../helpers/show-edit-camera-dialog";
-import "../../../homeassistant-frontend/src/components/ha-dialog";
-import "../../../homeassistant-frontend/src/components/ha-header-bar";
-import "../../../homeassistant-frontend/src/components/ha-form/ha-form";
+import "../../../frontend-release/src/components/ha-dialog";
+import "../../../frontend-release/src/components/ha-header-bar";
+import "../../../frontend-release/src/components/ha-form/ha-form";
 import { fetchCameraInformation, updateCameraInformation } from "../../data/websocket";
 import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { localize } from "../../localize/localize";
@@ -53,7 +53,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
     this._params = params;
     this.schema = form_schema;
     this.dialogOpen = true;
-    this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entity_id);
+    this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entityID);
     this.registeredCameras = getCameraEntities(this.hass.states).map(
       (camera: cameraCard) => camera.name
     );

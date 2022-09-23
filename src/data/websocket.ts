@@ -1,4 +1,4 @@
-import { HomeAssistant } from "../../homeassistant-frontend/src/types";
+import { HomeAssistant } from "../../frontend-release/src/types";
 import {
   Configuration,
   Repository,
@@ -28,19 +28,19 @@ export const updateCameraInformation = async (hass: HomeAssistant, cameraInfo): 
   return response;
 };
 
-export const removeCamera = async (hass: HomeAssistant, id, entity_id) => {
+export const removeCamera = async (hass: HomeAssistant, id, entityID) => {
   const response = await hass.connection.sendMessagePromise<boolean>({
     type: "raceland-camera-dashboard/remove_camera",
-    entity_id: entity_id,
+    entity_id: entityID,
     unique_id: id,
   });
   return response;
 };
 
-export const fetchCameraInformation = async (hass: HomeAssistant, camera_entity_id) => {
+export const fetchCameraInformation = async (hass: HomeAssistant, cameraEntityID) => {
   const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
     type: "raceland-camera-dashboard/fetch_camera_information",
-    entity_id: camera_entity_id,
+    entity_id: cameraEntityID,
   });
   return response;
 };

@@ -5,11 +5,11 @@ import { mdiCheckboxMarkedCircle, mdiDelete } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
 import { classMap } from "lit/directives/class-map";
-import type { HassDialog } from "../../../homeassistant-frontend/src/dialogs/make-dialog-manager";
-import { fireEvent } from "../../../homeassistant-frontend/src/common/dom/fire_event";
-import type { HomeAssistant } from "../../../homeassistant-frontend/src/types";
-import "../../../homeassistant-frontend/src/components/ha-dialog";
-import "../../../homeassistant-frontend/src/components/ha-header-bar";
+import type { HassDialog } from "../../../frontend-release/src/dialogs/make-dialog-manager";
+import { fireEvent } from "../../../frontend-release/src/common/dom/fire_event";
+import type { HomeAssistant } from "../../../frontend-release/src/types";
+import "../../../frontend-release/src/components/ha-dialog";
+import "../../../frontend-release/src/components/ha-header-bar";
 import { DeleteCameraDialogParams } from "../../helpers/show-delete-camera-dialog";
 import { CameraConfiguration } from "../../data/types";
 import { removeCamera, fetchCameraInformation } from "../../data/websocket";
@@ -30,7 +30,7 @@ export class HuiDeleteDialogCamera
 
   public async showDialog(params: DeleteCameraDialogParams): Promise<void> {
     this._params = params;
-    this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entity_id);
+    this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entityID);
   }
 
   public closeDialog(): void {
@@ -93,7 +93,7 @@ export class HuiDeleteDialogCamera
     const result = await removeCamera(
       this.hass,
       this.cameraInfo.unique_id,
-      this.cameraInfo.entity_id
+      this.cameraInfo.entityID
     );
     if (result === true) {
       this.closeDialog();

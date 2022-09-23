@@ -3,13 +3,13 @@ import "@material/mwc-button/mwc-button";
 import { mdiPlusCircle } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators";
-import { fireEvent } from "../../homeassistant-frontend/src/common/dom/fire_event";
-import "../../homeassistant-frontend/src/components/ha-card";
-import "../../homeassistant-frontend/src/components/ha-chip";
-import "../../homeassistant-frontend/src/components/ha-icon";
-import "../../homeassistant-frontend/src/components/ha-svg-icon";
+import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
+import "../../frontend-release/src/components/ha-card";
+import "../../frontend-release/src/components/ha-chip";
+import "../../frontend-release/src/components/ha-icon";
+import "../../frontend-release/src/components/ha-svg-icon";
 import "./camera-button-menu";
-import { HomeAssistant } from "../../homeassistant-frontend/src/types";
+import { HomeAssistant } from "../../frontend-release/src/types";
 import { localize } from "../localize/localize";
 
 @customElement("new-camera-card")

@@ -1,12 +1,12 @@
 import { mdiClose, mdiMagnify } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators";
-import "../../homeassistant-frontend/src/components/ha-icon-button";
-import "../../homeassistant-frontend/src/components/ha-svg-icon";
-import "../../homeassistant-frontend/src/components/ha-textfield";
-import type { HaTextField } from "../../homeassistant-frontend/src/components/ha-textfield";
-import { HomeAssistant } from "../../homeassistant-frontend/src/types";
-import { fireEvent } from "../../homeassistant-frontend/src/common/dom/fire_event";
+import "../../frontend-release/src/components/ha-icon-button";
+import "../../frontend-release/src/components/ha-svg-icon";
+import "../../frontend-release/src/components/ha-textfield";
+import type { HaTextField } from "../../frontend-release/src/components/ha-textfield";
+import { HomeAssistant } from "../../frontend-release/src/types";
+import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
 
 @customElement("search-input-round")
 class SearchInputRound extends LitElement {

@@ -7,7 +7,7 @@ const log = require("fancy-log");
 const { string } = require("rollup-plugin-string");
 const handler = require("serve-handler");
 const json = require("@rollup/plugin-json");
-const ignore = require("../../homeassistant-frontend/build-scripts/rollup-plugins/ignore-plugin");
+const ignore = require("../../frontend-release/build-scripts/rollup-plugins/ignore-plugin");
 const commonjs = require("@rollup/plugin-commonjs");
 const babel = require("@rollup/plugin-babel").babel;
 const babelTypescript = require("@babel/preset-typescript");
@@ -56,8 +56,8 @@ const DevelopPlugins = [
   ignore({
     files: [
       require.resolve("@polymer/font-roboto/roboto.js"),
-      path.resolve("./homeassistant-frontend/src/components/ha-icon.ts"),
-      path.resolve("./homeassistant-frontend/src/components/ha-icon-picker.ts"),
+      path.resolve("./frontend-release/src/components/ha-icon.ts"),
+      path.resolve("./frontend-release/src/components/ha-icon-picker.ts"),
     ],
   }),
   entrypointHashmanifest({ manifestName: "./cameras_dashboard/manifest.json" }),

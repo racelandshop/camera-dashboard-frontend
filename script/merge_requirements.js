@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-let rawcore = fs.readFileSync("./homeassistant-frontend/package.json");
+let rawcore = fs.readFileSync("./frontend-release/package.json");
 let rawhacs = fs.readFileSync("./package.json");
 
 const core = JSON.parse(rawcore);
