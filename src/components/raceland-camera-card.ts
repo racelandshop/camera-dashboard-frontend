@@ -28,7 +28,7 @@ export class racelandCameraCard extends LitElement {
     return html`
       <ha-card narrow=${this.narrow}>
         <div class="top-row">
-          <button-recorder> @click=${this.handleRecord} </button-recorder>
+          <!-- <button-recorder> @click=${this.handleRecord} </button-recorder> -->
           <camera-button-menu
             .hass=${this.hass}
             .cameraInfo=${this.cameraInfo}
