@@ -20,4 +20,4 @@ export function computeDomain(entity: string): string {
 
 export const defaultIntegration = "generic";
 
-export const cameraIntegrations = ["generic", "MJPEG"];
+export const cameraIntegrations = ["generic"];

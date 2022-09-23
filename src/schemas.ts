@@ -1,16 +1,14 @@
-import memoizeOne from "memoize-one";
-import type { HaFormSchema } from "../frontend-release/src/components/ha-form/types";
-
-export const customSchema = memoizeOne((integrationOptions): HaFormSchema[] => [
-  {
-    name: "integration",
-    selector: {
-      select: {
-        options: integrationOptions,
-        mode: "dropdown",
-      },
-    },
-  },
+export const customSchema = [
+  //In case we want to implement more integrations for camera
+  // {
+  //   name: "integration",
+  //   selector: {
+  //     select: {
+  //       options: integrationOptions,
+  //       mode: "dropdown",
+  //     },
+  //   },
+  // },
   {
     name: "name",
     selector: { text: {} },
@@ -39,7 +37,7 @@ export const customSchema = memoizeOne((integrationOptions): HaFormSchema[] => [
   },
   { name: "record_video_of_camera", selector: { boolean: {} } },
   { name: "advanced_options", selector: { boolean: {} } },
-]);
+];
 
 export const customCameraExtraOptionSchema = [
   {

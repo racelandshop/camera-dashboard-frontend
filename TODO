@@ -4,16 +4,12 @@ How will I load the css from the themes into this?
 
 Add type hints for camera types
 Fix aspect ration with other screens size (Is there a need to adapt it to small screens?)
-Review the the fire-events
 Review CSS (there are some place where the px measure might need to be switched to percentages)
 Add rounded edges for all the cards
 Make Sure I pass hass for all the elements (? might not be necessary but it good practice)
 When I click +camera it take a while for the first dialog to appear. Why?
-Rework the entire HACS object into a raceland object. I will need this for updating
 
 DO/Verify translations. Duplicated keys in translation
-
-I also have to be carefull to update the frontned information when If the entity Id is updated
 
 ### In main
 
@@ -48,11 +44,3 @@ I also have to be carefull to update the frontned information when If the entity
 ## Backend Stuff:
 
 - When I remove the cameras if I restart HA right away it does not give time for the entity_registry to do its magic. I should implement a fail safe to remove these entities in the **init** (e.g entity_registry.remove_entity(entity_id)). I can check which entities I want to remove by comparing to the list (camera information in .storage folder)
-- Implement other options for MJPEG cameras
-
-# Dynamic forms:
-
-Are all the features of generic cameras supported by mjpeg (or implement some feature if it makes sense in this context)
-Fix MJPEG stream (what is the base link?)
-
-Add default integration when using custom forms

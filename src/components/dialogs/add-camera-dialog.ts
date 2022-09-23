@@ -15,7 +15,7 @@ import { CreateCameraDialogParams } from "../../helpers/show-create-camera-dialo
 import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { cameraBrand, cameraModel } from "../../data/types";
 import { localize } from "../../localize/localize";
-import { defaultIntegration, cameraIntegrations } from "../../common";
+import { defaultIntegration } from "../../common";
 import "../camera-brand-icon-button";
 import "../search-input-round";
 
@@ -125,7 +125,7 @@ export class HuiCreateDialogCamera
   private _addCustomCamera() {
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: customSchema(cameraIntegrations),
+      body: customSchema,
       extra_options: customCameraExtraOptionSchema,
       footer: {
         back: localize("common.go_back"),
