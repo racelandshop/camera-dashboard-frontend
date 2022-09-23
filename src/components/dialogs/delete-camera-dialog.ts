@@ -24,13 +24,16 @@ export class HuiDeleteDialogCamera
 
   @state() private _params?: DeleteCameraDialogParams;
 
-  @state() private cameraInfo!: CameraConfiguration;
+  @state() private cameraConfiguration!: CameraConfiguration;
 
   @state() private _currTabIndex = 0;
 
   public async showDialog(params: DeleteCameraDialogParams): Promise<void> {
     this._params = params;
-    this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entityID);
+    this.cameraConfiguration = await fetchCameraInformation(
+      this.hass,
+      this._params.cameraInfo.entityID
+    );
   }
 
   public closeDialog(): void {
@@ -92,8 +95,8 @@ export class HuiDeleteDialogCamera
     }
     const result = await removeCamera(
       this.hass,
-      this.cameraInfo.unique_id,
-      this.cameraInfo.entityID
+      this.cameraConfiguration.unique_id,
+      this.cameraConfiguration.entity_id
     );
     if (result === true) {
       this.closeDialog();
