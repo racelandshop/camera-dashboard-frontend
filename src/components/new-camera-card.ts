@@ -1,8 +1,10 @@
 import "@material/mwc-button/mwc-button";
 import "@material/mwc-button/mwc-button";
-import { mdiPlusCircle } from "@mdi/js";
+import { RippleHandlers } from "@material/mwc-ripple/ripple-handlers";
+import { mdiPlus } from "@mdi/js";
+import type { Ripple } from "@material/mwc-ripple";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators";
+import { customElement, property, state, queryAsync, eventOptions } from "lit/decorators";
 import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
 import "../../frontend-release/src/components/ha-card";
 import "../../frontend-release/src/components/ha-chip";
@@ -18,21 +20,54 @@ export class newCameraCard extends LitElement {
 
   @property({ type: Boolean }) public narrow!: boolean;
 
+  @state() private _shouldRenderRipple = false;
+
+  @queryAsync("mwc-ripple") private _ripple!: Promise<Ripple | null>;
+
   protected render(): TemplateResult | void {
     return html`
-      <ha-card class="new-camera" narrow=${this.narrow}>
-        <ha-svg-icon
-          @click=${this._openAddCameraDialog}
-          class="new-camera-icon"
-          path=${mdiPlusCircle}
-        ></ha-svg-icon>
-        <div class="card-title">${localize("common.add_camera")}</div>
+      <ha-card
+        @click=${this._openAddCameraDialog}
+        class="add-new-camera"
+        @focus=${this.handleRippleFocus}
+        @blur=${this.handleRippleBlur}
+        @mousedown=${this.handleRippleActivate}
+        @mouseup=${this.handleRippleDeactivate}
+        @touchstart=${this.handleRippleActivate}
+        @touchend=${this.handleRippleDeactivate}
+        @touchcancel=${this.handleRippleDeactivate}
+      >
+        <ha-svg-icon .path=${mdiPlus} id="icon"></ha-svg-icon>
+        <div id="text">${localize("common.add_camera")}</div>
+        ${this._shouldRenderRipple ? html`<mwc-ripple></mwc-ripple>` : ""}
       </ha-card>
     `;
   }
 
   private _openAddCameraDialog(ev) {
     fireEvent(this, "add-new-camera");
+  }
+
+  private _rippleHandlers: RippleHandlers = new RippleHandlers(() => {
+    this._shouldRenderRipple = true;
+    return this._ripple;
+  });
+
+  @eventOptions({ passive: true })
+  private handleRippleActivate(evt?: Event) {
+    this._rippleHandlers.startPress(evt);
+  }
+
+  private handleRippleDeactivate() {
+    this._rippleHandlers.endPress();
+  }
+
+  private handleRippleFocus() {
+    this._rippleHandlers.startFocus();
+  }
+
+  private handleRippleBlur() {
+    this._rippleHandlers.endFocus();
   }
 
   static get styles(): CSSResultGroup {
@@ -50,25 +85,48 @@ export class newCameraCard extends LitElement {
           font-size: 1.2rem;
         }
 
-        .new-camera-icon {
-          width: 60%;
-          height: 60%;
-          color: #7b7b7b;
-          margin-top: 20px;
+        .add-new-camera {
+          background-color: var(--card-background-color, white);
+          box-shadow: var(
+            --mdc-fab-box-shadow,
+            0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+            0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+            0px 1px 18px 0px rgba(0, 0, 0, 0.12)
+          );
           cursor: pointer;
-        }
-
-        .new-camera-icon:hover {
-          color: #8660e0;
-          width: 60%;
-          height: 60%;
-          margin-top: 20px;
-          cursor: pointer;
-        }
-
-        .card-title {
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          padding: 4% 0;
+          font-size: 2.3rem;
+          height: 100%;
+          box-sizing: border-box;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+          border-radius: 1.5rem;
+          font-weight: 450;
+        }
+        #text {
+          text-align: center;
+          margin-top: 10%;
+          width: 60%;
+          font-size: 2rem;
+          font-weight: 450;
+        }
+        .add-new-camera:hover > #icon {
+          background-color: var(--sidebar-selected-icon-color);
+        }
+        .add-new-camera:hover > #text {
+          color: var(--sidebar-selected-icon-color);
+        }
+        #icon {
+          background-color: rgb(144, 144, 145);
+          color: white;
+          border-radius: 100%;
+          width: 30%;
+          height: auto;
         }
 
         .description {
