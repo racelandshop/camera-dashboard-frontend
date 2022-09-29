@@ -86,22 +86,4 @@ export const modelSchema = [
     name: "name",
     selector: { text: {} },
   },
-  {
-    name: "username",
-    selector: { text: {} },
-  },
-  {
-    name: "password",
-    selector: { text: { type: "password" } },
-  },
-  {
-    name: "number_of_cameras",
-    selector: { text: { min: 0, max: 10 } },
-  },
-  {
-    name: "ip",
-    selector: { text: {} },
-  },
-
-  { name: "record_video_of_camera", selector: { boolean: {} } },
 ];

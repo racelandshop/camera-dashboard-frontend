@@ -45,10 +45,11 @@ export interface schemaForm {
 }
 
 export interface CameraConfiguration {
-  integration: string;
   ip?: string;
-  number_of_cameras?: number;
-  name?: string;
+  channel?: string;
+  stream_source_door?: string;
+  still_url_door?: string;
+  name: string;
   still_image_url?: string;
   stream_source?: string;
   username?: string;

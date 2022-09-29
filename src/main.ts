@@ -6,6 +6,7 @@ import Fuse from "fuse.js";
 import "../frontend-release/src/resources/ha-style";
 import "../frontend-release/src/components/search-input";
 import "../frontend-release/src/components/ha-fab";
+import { showDialog } from "../frontend-release/src/dialogs/make-dialog-manager";
 import { applyThemesOnElement } from "../frontend-release/src/common/dom/apply_themes_on_element";
 import { fireEvent } from "../frontend-release/src/common/dom/fire_event";
 import { makeDialogManager } from "../frontend-release/src/dialogs/make-dialog-manager";
@@ -15,7 +16,6 @@ import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog";
 import { showEditCameraDialog } from "./helpers/show-edit-camera-dialog";
 import { showModelOptionsDialog } from "./helpers/show-camera-models-dialog";
 import { showCameraDialog } from "./helpers/show-camera-form-dialog";
-import cameraDatabase from "./data/camera_database.json";
 import { localize } from "./localize/localize";
 import { getCameraEntities } from "./common";
 import "./components/raceland-camera-card";
@@ -29,8 +29,7 @@ import {
   schemaForm,
   CameraConfiguration,
 } from "./data/types";
-
-import { showDialog } from "../frontend-release/src/dialogs/make-dialog-manager";
+import { fetchCameraDatabase } from "./data/websocket";
 
 declare global {
   // for fire event
@@ -62,14 +61,17 @@ class cameraFrontend extends cameraDashboardElement {
 
   @property({ attribute: false }) public registeredCameras!: any;
 
+  @property({ attribute: false }) public cameraDatabase: any;
+
   @state() private _filter = "";
 
   public connectedCallback() {
     super.connectedCallback();
   }
 
-  protected firstUpdated(changedProps) {
+  protected async firstUpdated(changedProps) {
     super.firstUpdated(changedProps);
+    this.cameraDatabase = await fetchCameraDatabase(this.hass);
 
     this._applyTheme();
 
@@ -82,7 +84,7 @@ class cameraFrontend extends cameraDashboardElement {
     });
 
     this.addEventListener("add-new-camera", () => {
-      showCreateCameraDialog(this, { database: cameraDatabase });
+      showCreateCameraDialog(this, { database: this.cameraDatabase });
     });
 
     this.addEventListener("open-camera-brand-dialog", (ev) => {

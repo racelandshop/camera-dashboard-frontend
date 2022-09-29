@@ -34,6 +34,9 @@
     "verify_ssl": "Verify SSL",
     "rtsp_transport": "Select RTSP Transport",
     "framerate": "Framerate",
+    "channel": "Channel",
+    "still_url_door": "Still Image Door",
+    "stream_source_door": "Stream Door",
     "issues": {
       "missing_integration": "Select an integration type",
       "name": "Camera name is required",

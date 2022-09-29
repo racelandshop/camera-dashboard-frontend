@@ -15,7 +15,6 @@ import "../../../frontend-release/src/components/ha-header-bar";
 import { CameraModelsDialogParams } from "../../helpers/show-camera-models-dialog";
 import { cameraBrand, cameraModel } from "../../data/types";
 import { customSchema, customCameraExtraOptionSchema, modelSchema } from "../../schemas";
-import { defaultIntegration, cameraIntegrations } from "../../common";
 import { localize } from "../../localize/localize";
 import "../camera-model-icon-button";
 import "../search-input-round";
@@ -64,8 +63,8 @@ export class HuiCreateDialogCameraBrand
     if (!this.modelDatabase) {
       return html``;
     }
-
     const modelDatabase = this._filterModels(this.modelDatabase, this._filter);
+    const modifiedSchema = [];
 
     return html`
       <ha-dialog
@@ -98,7 +97,7 @@ export class HuiCreateDialogCameraBrand
           ${modelDatabase.map((cameraModelInfo) => {
             return html`<camera-model-icon-button
               .label="${cameraModelInfo.version}"
-              @click=${() => this._addCamera(cameraModelInfo)}
+              @click=${() => this._addCamera(cameraModelInfo, modifiedSchema)}
             ></camera-model-icon-button>`;
           })}
         </div>
@@ -117,18 +116,58 @@ export class HuiCreateDialogCameraBrand
     `;
   }
 
-  private _addCamera(cameraModelInfo) {
-    if (cameraModelInfo.supportChannels === false) {
-      const index = modelSchema.indexOf({
-        name: "number_of_cameras",
-        selector: { number: {} },
-      });
-      modelSchema.splice(index, 1);
+  private _addCamera(cameraModelInfo, modifiedSchema) {
+    const addedFields = [];
+    const regex = new RegExp("{{ ([^}]+) }}", "g");
+    modifiedSchema = [...modelSchema];
+
+    //Dynamically add the information for the formulary
+    for (const [key, value] of Object.entries(cameraModelInfo.fields)) {
+      modifiedSchema.push(value);
+      addedFields.push(key);
+    }
+
+    if (cameraModelInfo.options.static !== undefined) {
+      const results = cameraModelInfo.options.static.matchAll(regex);
+      for (let res of results) {
+        if (res[1]) {
+          if (!addedFields.includes(res[1])) {
+            //Index 1 has the captured group
+            modifiedSchema.push({
+              name: res[1],
+              selector: { text: {} },
+            });
+            addedFields.push(res[1]);
+          }
+        }
+      }
+    }
+
+    if (cameraModelInfo.options.stream !== undefined) {
+      const results = cameraModelInfo.options.stream.matchAll(regex);
+      for (let res of results) {
+        if (res[1]) {
+          //Index 1 has the captured group
+          if (!addedFields.includes(res[1])) {
+            modifiedSchema.push({
+              name: res[1],
+              selector: { text: {} },
+            });
+            addedFields.push(res[1]);
+          }
+        }
+      }
+    }
+
+    for (const [key, value] of Object.entries(cameraModelInfo.fields)) {
+      if (!addedFields.includes(key)) {
+        modifiedSchema.push(value);
+      }
     }
 
     const form_schema = {
       header: { title: localize("common.add_camera") },
-      body: modelSchema,
+      body: modifiedSchema,
       footer: {
         back: localize("common.go_back"),
         accept: localize("common.add_camera"),
@@ -138,7 +177,8 @@ export class HuiCreateDialogCameraBrand
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: cameraModelInfo,
       schema: form_schema,
-      data: { integration: defaultIntegration },
+      data: { still_image_url: cameraModelInfo.options.static, stream_source: cameraModelInfo.options.stream },
+
       formType: "brand_camera",
       backEvent: { event_name: "open-camera-brand-dialog", modelDatabase: this.modelDatabase },
     });
@@ -160,7 +200,7 @@ export class HuiCreateDialogCameraBrand
     fireEvent(this, "open-camera-add-camera-form", {
       cameraModelInfo: {} as cameraModel,
       schema: form_schema,
-      data: { integration: defaultIntegration },
+      data: {},
       formType: "custom_camera",
       backEvent: { event_name: "open-camera-brand-dialog", modelDatabase: this.modelDatabase },
     });

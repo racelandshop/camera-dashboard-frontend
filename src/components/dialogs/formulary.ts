@@ -17,7 +17,7 @@ import type { HomeAssistant } from "../../../frontend-release/src/types";
 import "../camera-model-icon-button";
 import "../search-input-round";
 import { getCameraEntities } from "../../common";
-import { sendCameraInformation } from "../../data/websocket";
+import { sendCameraInformation, sendCameraBrandInformation } from "../../data/websocket";
 import {
   backEventOptions,
   schemaForm,
@@ -141,10 +141,6 @@ export class HuiCreateDialogCameraFormulary
   }
 
   private validInputCustom() {
-    if (!this.data.integration) {
-      this.validIssue = localize("form.issues.missing_integration");
-      return false;
-    }
     if (!this.data.name) {
       this.validIssue = localize("form.issues.name");
       return false;
@@ -161,30 +157,23 @@ export class HuiCreateDialogCameraFormulary
   }
 
   private validInput() {
-    if (!this.data.name) {
-      this.validIssue = localize("form.issues.name");
-      return false;
-    }
-
     if (!this.data.ip) {
       this.validIssue = localize("form.issues.ip_missing");
       return false;
     }
 
     if (
-      isNaN(Number(this.data.number_of_cameras)) ||
-      (this.data.number_of_cameras !== undefined && this.data.number_of_cameras <= 0)
+      isNaN(Number(this.data.channel)) ||
+      (this.data.channel !== undefined && this.data.channel <= 0)
     ) {
       this.validIssue = localize("form.issues.n_cameras");
       return false;
     }
 
     let cameraNames: Array<string> = [];
-    if (this.data.number_of_cameras !== undefined && this.data.number_of_cameras > 1) {
-      cameraNames = Array.from(
-        { length: this.data.number_of_cameras },
-        (_, k) => `${this.data.name} ${k + 1}`
-      );
+    const channel: number = parseInt(this.data.channel);
+    if (this.data.channel !== undefined && channel > 1) {
+      cameraNames = Array.from({ length: channel }, (_, k) => `${this.data.name} ${k + 1}`);
     } else {
       cameraNames = [this.data.name];
     }
@@ -194,58 +183,6 @@ export class HuiCreateDialogCameraFormulary
       return false;
     }
     return true;
-  }
-
-  private parseAutoCompleteData() {
-    let stream_url = undefined;
-    let static_url = undefined;
-    if (this.cameraModelInfo?.options.stream !== undefined) {
-      //TODO
-      stream_url =
-        this.cameraModelInfo?.options.stream.prefix +
-        this.data.ip +
-        this.cameraModelInfo?.options.stream.url;
-    }
-
-    if (this.cameraModelInfo?.options.static !== undefined) {
-      static_url =
-        this.cameraModelInfo?.options.static.prefix +
-        this.data.ip +
-        this.cameraModelInfo?.options.static.url;
-    }
-
-    const newData: Array<CameraConfiguration> = [];
-
-    if (this.data.number_of_cameras !== undefined && this.data.number_of_cameras > 1) {
-      for (let i = 1; i <= this.data.number_of_cameras; i++) {
-        const channelStaticUrl = static_url.replace("${channel}", i);
-        const channelStreamUrl = stream_url.replace("${channel}", i);
-        const nameChannel = this.data.name + " " + i;
-        newData.push({
-          integration: "generic", //TODO: Temporary solution
-          name: nameChannel,
-          still_image_url: channelStaticUrl,
-          stream_source: channelStreamUrl,
-          record_video_of_camera: this.data.record_video_of_camera,
-          username: this.data.username,
-          password: this.data.password,
-        });
-      }
-    } else {
-      const channelStaticUrl = static_url.replace("${channel}", 1);
-      const channelStreamUrl = stream_url.replace("${channel}", 1);
-      newData.push({
-        integration: "generic", //TODO: Temporary solution
-        name: this.data.name,
-        still_image_url: channelStaticUrl,
-        stream_source: channelStreamUrl,
-        record_video_of_camera: this.data.record_video_of_camera,
-        username: this.data.username,
-        password: this.data.password,
-      });
-    }
-
-    return newData;
   }
 
   private async _accept() {
@@ -261,11 +198,7 @@ export class HuiCreateDialogCameraFormulary
     } else if (this.formType === "brand_camera") {
       const valid = this.validInput();
       if (valid === true) {
-        const parsedData = this.parseAutoCompleteData();
-        for (let i = 0; i < parsedData.length; i++) {
-          await sendCameraInformation(this.hass, parsedData[i]);
-        }
-
+        await sendCameraBrandInformation(this.hass, this.data);
         this.closeDialog();
         fireEvent(this, "update-camera-dashboard");
       }
