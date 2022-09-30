@@ -26,21 +26,11 @@ DO/Verify translations. Duplicated keys in translation
 - Fetch local items (images)
 - Dinamic text size with css depending on the lenght?
 
-## In the new-camera-card
-
-- Also highligh text upon hover
-
 ## In formulary
 
-- Integration type -> Use SVG icon in before the selector
-- Icons in record Video of camera and more options are not appearing
 - In the autocomplete camera form (when picking one camera model, add information about the default 'door' i.e what comes after ":" . Also, if the IP has a 'door' ignore this parameter. (where do I find information about this?)
-- In the autocomplete camera form, can I used "stream" and "static" and dictionary keys? FFPMPEG and JPEG would give more information and might help pick the integration
+- Currently, when the channel name is null I can not add stuff (see this error in the formulary validInput methods)
 
 ## In the edit camera info dialog:
 
 - Need to update/improve the CSS
-
-## Backend Stuff:
-
-- When I remove the cameras if I restart HA right away it does not give time for the entity_registry to do its magic. I should implement a fail safe to remove these entities in the **init** (e.g entity_registry.remove_entity(entity_id)). I can check which entities I want to remove by comparing to the list (camera information in .storage folder)
