@@ -35,7 +35,6 @@ export const customSchema = [
       },
     ],
   },
-  { name: "record_video_of_camera", selector: { boolean: {} } },
   { name: "advanced_options", selector: { boolean: {} } },
 ];
 
@@ -62,7 +61,7 @@ export const customCameraExtraOptionSchema = [
     name: "rtsp_transport",
     selector: {
       select: {
-        options: ["None", "tcp", "udp", "udp_multicast", "http"],
+        options: ["tcp", "udp", "udp_multicast", "http"],
         mode: "dropdown",
       },
     },

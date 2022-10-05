@@ -37,6 +37,7 @@
     "channel": "Channel",
     "still_url_door": "Still Image Door",
     "stream_source_door": "Stream Door",
+    "add_multi_channels": "Add all channels?",
     "issues": {
       "missing_integration": "Select an integration type",
       "name": "Camera name is required",

@@ -76,7 +76,6 @@ export class HuiCreateDialogCameraFormulary
     if (!this.dialogOpen) {
       return html``;
     }
-
     const schemaBody = this.schema.body;
     const schemaExtraOptions = this.schema.extra_options;
 
