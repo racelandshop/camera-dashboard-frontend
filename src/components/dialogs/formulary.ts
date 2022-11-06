@@ -16,7 +16,7 @@ import { fireEvent } from "../../../frontend-release/src/common/dom/fire_event";
 import type { HomeAssistant } from "../../../frontend-release/src/types";
 import "../camera-model-icon-button";
 import "../search-input-round";
-import { getCameraEntities } from "../../common";
+import { getCameraEntities, removeTrailingSpacesInput } from "../../common";
 import { sendCameraInformation, sendCameraBrandInformation } from "../../data/websocket";
 import {
   backEventOptions,
@@ -135,7 +135,7 @@ export class HuiCreateDialogCameraFormulary
   };
 
   private _valueChanged(ev: CustomEvent): void {
-    const config = ev.detail.value;
+    const config = removeTrailingSpacesInput(ev.detail.value);
     this.data = { ...this.data, ...config };
   }
 

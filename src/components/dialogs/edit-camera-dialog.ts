@@ -16,7 +16,7 @@ import "../../../frontend-release/src/components/ha-form/ha-form";
 import { fetchCameraInformation, updateCameraInformation } from "../../data/websocket";
 import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { localize } from "../../localize/localize";
-import { getCameraEntities, cameraIntegrations } from "../../common";
+import { getCameraEntities, removeTrailingSpacesInput } from "../../common";
 import { backEventOptions, schemaForm, cameraCard, cameraInfo } from "../../data/types";
 import "../camera-brand-icon-button";
 import "../search-input-round";
@@ -137,7 +137,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
   };
 
   private _valueChanged(ev: CustomEvent): void {
-    const config = ev.detail.value;
+    const config = removeTrailingSpacesInput(ev.detail.value);
     this.cameraInfo = { ...this.cameraInfo, ...config };
   }
 
