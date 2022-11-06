@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="hacs-frontend",
-    version="main",
-    description="The HACS frontend",
-    url="https://github.com/hacs/frontend",
-    author="Joakim Sorensen",
-    author_email="ludeeus@gmail.com",
-    packages=find_packages(include=["hacs_frontend", "hacs_frontend.*"]),
+    name="cameras-dashboard",
+    version="20221009112053",
+    description="The Cameras Dashboard frontend",
+    url="https://github.com/racelandshop/camera-dashboard-frontend",
+    author="Rogério Ribeiro",
+    author_email="zroger499@gmail.com",
+    packages=find_packages(include=["cameras_dashboard"]),
     include_package_data=True,
     zip_safe=False,
 )
