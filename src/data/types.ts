@@ -61,5 +61,5 @@ export interface CameraConfiguration {
   verify_ssl?: string;
   rtsp_transport?: string;
   framerate?: string;
-  entity_id?: string;
+  entityID?: string;
 }

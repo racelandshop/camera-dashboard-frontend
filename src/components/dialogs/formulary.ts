@@ -4,7 +4,7 @@ import "@material/mwc-button/mwc-button";
 import "@material/mwc-formfield";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
-import { mdiClose, mdiChevronLeft } from "@mdi/js";
+import { mdiClose, mdiChevronLeft, mdiPlus } from "@mdi/js";
 import { classMap } from "lit/directives/class-map";
 import "../../../frontend-release/src/components/ha-dialog";
 import "../../../frontend-release/src/components/ha-header-bar";
@@ -27,6 +27,45 @@ import {
 } from "../../data/types";
 import { CameraFormsDialogParams } from "../../helpers/show-camera-form-dialog";
 import { localize } from "../../localize/localize";
+
+export const haStyleDialog = css`
+  /* mwc-dialog (ha-dialog) styles */
+  ha-dialog {
+    --mdc-dialog-min-width: 400px;
+    --mdc-dialog-max-width: 600px;
+    --mdc-dialog-heading-ink-color: var(--primary-text-color);
+    --mdc-dialog-content-ink-color: var(--primary-text-color);
+    --justify-action-buttons: space-between;
+    --mdc-switch__pointer_events: auto;
+  }
+
+  ha-dialog .form {
+    padding-bottom: 24px;
+    color: var(--primary-text-color);
+  }
+
+  a {
+    color: var(--accent-color) !important;
+  }
+
+  /* make dialog fullscreen on small screens */
+  @media all and (max-width: 450px), all and (max-height: 500px) {
+    ha-dialog {
+      --mdc-dialog-min-width: calc(100vw - env(safe-area-inset-right) - env(safe-area-inset-left));
+      --mdc-dialog-max-width: calc(100vw - env(safe-area-inset-right) - env(safe-area-inset-left));
+      --mdc-dialog-min-height: 100%;
+      --mdc-dialog-max-height: 100%;
+      --vertial-align-dialog: flex-end;
+      --ha-dialog-border-radius: 0px;
+    }
+  }
+  mwc-button.warning {
+    --mdc-theme-primary: var(--error-color);
+  }
+  .error {
+    color: var(--error-color);
+  }
+`;
 
 @customElement("raceland-formulary")
 export class HuiCreateDialogCameraFormulary
@@ -63,6 +102,7 @@ export class HuiCreateDialogCameraFormulary
     this.registeredCameras = getCameraEntities(this.hass.states).map(
       (camera: cameraCard) => camera.name
     );
+    console.log("data", this.data);
   }
 
   public closeDialog(): boolean {
@@ -78,7 +118,7 @@ export class HuiCreateDialogCameraFormulary
     }
     const schemaBody = this.schema.body;
     const schemaExtraOptions = this.schema.extra_options;
-
+    console.log("advanced options", schemaBody);
     return html`
       <ha-dialog
         open
@@ -88,37 +128,58 @@ export class HuiCreateDialogCameraFormulary
         class=${classMap({ table: this._currTabIndex === 1 })}
       >
         <div class="cancel">
-          <ha-svg-icon
-            dialogAction="close"
-            class="cancel-icon"
-            slot="icon"
-            .path=${mdiClose}
-          ></ha-svg-icon>
+          <div slot="heading" class="heading">
+            <ha-header-bar id="bar">
+              <div slot="title" class="main-title" .title=${name}>
+                ${localize("common.add_camera")}
+              </div>
+              <ha-icon-button
+                slot="navigationIcon"
+                dialogAction="cancel"
+                .label=${this.hass!.localize("ui.dialogs.more_info_control.dismiss")}
+                id="cancel"
+                .path=${"M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"}
+              ></ha-icon-button>
+            </ha-header-bar>
+          </div>
         </div>
-        <div class="header-text">${this.schema.header.title}</div>
-        ${this.validIssue ? html` <div class="form-issue">${this.validIssue}</div>` : html``}
-        <div class="form">
-          <ha-form
-            .hass=${this.hass}
-            .data=${this.data}
-            .schema=${schemaBody}
-            .computeLabel=${this._computeLabelCallback}
-            @value-changed=${this._valueChanged}
-          ></ha-form>
-          ${schemaExtraOptions && this.data.advanced_options
-            ? html` <ha-form
+        <div
+          class="content ${classMap({
+            "content-big": schemaBody.length < 6,
+          })} "
+        >
+          <div class="contentFather">
+            ${this.validIssue ? html` <div class="form-issue">${this.validIssue}</div>` : html``}
+            <div class="form">
+              <ha-form
                 .hass=${this.hass}
                 .data=${this.data}
-                .schema=${schemaExtraOptions}
+                .schema=${schemaBody}
                 .computeLabel=${this._computeLabelCallback}
                 @value-changed=${this._valueChanged}
-              ></ha-form>`
-            : html``}
+              ></ha-form>
+              ${schemaExtraOptions && this.data.advanced_options
+                ? html` <ha-form
+                    .hass=${this.hass}
+                    .data=${this.data}
+                    .schema=${schemaExtraOptions}
+                    .computeLabel=${this._computeLabelCallback}
+                    @value-changed=${this._valueChanged}
+                  ></ha-form>`
+                : html``}
+            </div>
+          </div>
         </div>
         <div class="options">
-          <mwc-button class="button-confirm" @click=${this._accept}
-            >${this.schema.footer.accept}</mwc-button
+          <ha-fab
+            class="button-confirm"
+            .label=${this.schema.footer.accept}
+            extended
+            @click=${this._accept}
+            })}
           >
+            <ha-svg-icon slot="icon" .path=${mdiPlus}></ha-svg-icon>
+          </ha-fab>
           ${this.backEvent
             ? html`<mwc-button class="button-back" dialogAction="close" @click=${this._goBack}
                 >${this.schema.footer.back}
@@ -128,6 +189,13 @@ export class HuiCreateDialogCameraFormulary
         </div>
       </ha-dialog>
     `;
+  }
+
+  private _cancel(ev?: Event) {
+    if (ev) {
+      ev.stopPropagation();
+    }
+    this.closeDialog();
   }
 
   private _computeLabelCallback = (schema: HaFormSchema) => {
@@ -216,12 +284,21 @@ export class HuiCreateDialogCameraFormulary
 
   static get styles(): CSSResultGroup {
     return [
+      haStyleDialog,
       css`
+        .content {
+          width: 83%;
+        }
+
         @media all and (max-width: 450px), all and (max-height: 500px) {
           /* overrule the ha-style-dialog max-height on small screens */
           ha-dialog {
             --mdc-dialog-max-height: 100%;
             height: 100%;
+          }
+          .content-big {
+            width: 83%;
+            height: 225vw;
           }
         }
 
@@ -241,6 +318,14 @@ export class HuiCreateDialogCameraFormulary
           --mdc-dialog-max-width: 500px;
           --dialog-content-padding: 2px 24px 20px 24px;
           --dialog-z-index: 5;
+        }
+        .options {
+          width: 100%;
+          position: sticky;
+          float: right;
+          right: calc(16px + env(safe-area-inset-right));
+          /* bottom: calc(16px + env(safe-area-inset-bottom)); */
+          z-index: 1;
         }
 
         ha-header-bar {
@@ -263,14 +348,14 @@ export class HuiCreateDialogCameraFormulary
         }
 
         .button-confirm {
-          background-color: #4ba2ff;
+          /* background-color: #4ba2ff; */
           float: right;
         }
 
         .button-back {
           --mdc-theme-primary: #7b7b7b;
           float: left;
-          margin-left: 5%;
+          /* margin-left: 5%; */
         }
 
         .form-issue {
@@ -288,8 +373,8 @@ export class HuiCreateDialogCameraFormulary
           height: 30px;
         }
         .form {
-          margin-left: 10%;
-          margin-right: 10%;
+          /* margin-left: 10%;
+          margin-right: 10%; */
         }
 
         .header-text {
@@ -307,17 +392,18 @@ export class HuiCreateDialogCameraFormulary
         .brand-list {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
-          grid-gap: 10%;
-          padding: 0px 60px 30px 60px;
+          grid-gap: 9%;
+          padding: 0px 55px 25px;
         }
 
         .cancel {
           cursor: pointer;
-          padding: 20px 20px 20px 20px;
+          /* padding: 20px 20px 20px 20px; */
+          width: 100%;
         }
 
         mwc-button {
-          padding: 10px;
+          /* padding: 10px; */
           text-align: center;
           text-decoration: none;
           display: inline-block;

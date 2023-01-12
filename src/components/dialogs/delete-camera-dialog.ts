@@ -1,7 +1,7 @@
 import "@material/mwc-tab-bar/mwc-tab-bar";
 import "@material/mwc-tab/mwc-tab";
 import "@material/mwc-button/mwc-button";
-import { mdiCheckboxMarkedCircle, mdiDelete } from "@mdi/js";
+import { mdiCheckboxMarkedCircle, mdiChevronLeft, mdiDelete } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
 import { classMap } from "lit/directives/class-map";
@@ -14,6 +14,45 @@ import { DeleteCameraDialogParams } from "../../helpers/show-delete-camera-dialo
 import { CameraConfiguration } from "../../data/types";
 import { removeCamera, fetchCameraInformation } from "../../data/websocket";
 import { localize } from "../../localize/localize";
+
+export const haStyleDialog = css`
+  /* mwc-dialog (ha-dialog) styles */
+  ha-dialog {
+    --mdc-dialog-min-width: 400px;
+    --mdc-dialog-max-width: 600px;
+    --mdc-dialog-heading-ink-color: var(--primary-text-color);
+    --mdc-dialog-content-ink-color: var(--primary-text-color);
+    --justify-action-buttons: space-between;
+    --mdc-switch__pointer_events: auto;
+  }
+
+  ha-dialog .form {
+    padding-bottom: 24px;
+    color: var(--primary-text-color);
+  }
+
+  a {
+    color: var(--accent-color) !important;
+  }
+
+  /* make dialog fullscreen on small screens */
+  @media all and (max-width: 450px), all and (max-height: 500px) {
+    ha-dialog {
+      --mdc-dialog-min-width: calc(100vw - env(safe-area-inset-right) - env(safe-area-inset-left));
+      --mdc-dialog-max-width: calc(100vw - env(safe-area-inset-right) - env(safe-area-inset-left));
+      --mdc-dialog-min-height: 100%;
+      --mdc-dialog-max-height: 100%;
+      --vertial-align-dialog: flex-end;
+      --ha-dialog-border-radius: 0px;
+    }
+  }
+  mwc-button.warning {
+    --mdc-theme-primary: var(--error-color);
+  }
+  .error {
+    color: var(--error-color);
+  }
+`;
 
 @customElement("delete-camera-dialog")
 export class HuiDeleteDialogCamera
@@ -61,12 +100,17 @@ export class HuiDeleteDialogCamera
             ></span>
           </ha-header-bar>
         </div>
-        <div class="text">
-          <p class="big-text">${localize("common.delete_camera")}</p>
-          <p class="small-text">${localize("dialog_text.verify_action")}</p>
+        <div class="content">
+          <div class="contentFather">
+            <div class="text">
+              <p class="big-text">${localize("common.delete_camera")}</p>
+              <p class="small-text">${localize("dialog_text.verify_action")}</p>
+            </div>
+          </div>
         </div>
         <div class="options">
           <mwc-button class="button-cancel" @click=${this._cancel}>
+            <ha-svg-icon class="icon-back" slot="icon" .path=${mdiChevronLeft}></ha-svg-icon>
             ${localize("common.back")}</mwc-button
           >
           <mwc-button class="button-confirm" @click=${this._delete}
@@ -93,10 +137,11 @@ export class HuiDeleteDialogCamera
     if (ev) {
       ev.stopPropagation();
     }
+    console.log("config", this.cameraConfiguration);
     const result = await removeCamera(
       this.hass,
-      this.cameraConfiguration.unique_id,
-      this.cameraConfiguration.entity_id
+      this.cameraConfiguration?.unique_id,
+      this.cameraConfiguration?.entityID
     );
     if (result === true) {
       this.closeDialog();
@@ -106,6 +151,7 @@ export class HuiDeleteDialogCamera
 
   static get styles(): CSSResultGroup {
     return [
+      haStyleDialog,
       css`
         @media all and (max-width: 450px), all and (max-height: 500px) {
           /* overrule the ha-style-dialog max-height on small screens */
@@ -139,11 +185,16 @@ export class HuiDeleteDialogCamera
           flex-shrink: 0;
           border-bottom: 1px solid var(--mdc-dialog-scroll-divider-color, rgba(0, 0, 0, 0.12));
         }
-
+        .content {
+          width: 100%;
+        }
         .button-cancel {
           background-color: #a3abae;
           float: left;
-          width: 22%;
+          width: 90px;
+        }
+        .options {
+          width: 100%;
         }
 
         .button-confirm {
@@ -155,7 +206,7 @@ export class HuiDeleteDialogCamera
         }
         mwc-button {
           padding: 10px;
-          text-align: center;
+          /* text-align: center; */
           text-decoration: none;
           display: inline-block;
           font-size: 16px;
@@ -189,7 +240,7 @@ export class HuiDeleteDialogCamera
           margin: 0px 0px 20px 0px;
         }
         .big-text {
-          font-family: "Roboto";
+          /* font-family: "Roboto"; */
           font-style: normal;
           font-weight: 500;
           font-size: 36px;
@@ -198,13 +249,29 @@ export class HuiDeleteDialogCamera
           margin: 10px;
         }
         .small-text {
-          font-family: "Roboto";
+          /* font-family: "Roboto"; */
           font-style: normal;
           font-weight: 400;
           font-size: 18px;
           line-height: 21px;
           color: #303033;
           margin: 10px;
+        }
+        ha-svg-icon {
+          margin-left: 0px;
+          margin-right: 6px;
+          display: inline-block;
+          position: relative;
+          vertical-align: top;
+          font-size: 1.125rem;
+          height: 2.125rem;
+          width: 1.7rem;
+        }
+        @media only screen and (max-width: 500px) {
+          .content {
+            width: 100%;
+            height: 171vw;
+          }
         }
       `,
     ];

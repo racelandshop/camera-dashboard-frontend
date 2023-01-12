@@ -20,13 +20,13 @@ export class CameraModelIconButton extends LitElement {
 
   protected render(): TemplateResult {
     return html`
-      <mwc-icon-button
+      <button
         .ariaLabel=${this.label}
         .title=${this.hideTitle ? "" : this.label}
         .disabled=${this.disabled}
       >
         ${this.hideTitle ? "" : this.label}
-      </mwc-icon-button>
+      </button>
     `;
   }
 
@@ -39,15 +39,35 @@ export class CameraModelIconButton extends LitElement {
       :host([disabled]) {
         pointer-events: none;
       }
-      mwc-icon-button {
+      button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
         border-radius: 25px;
-        border: 2px solid #73ad21;
-        padding: 20px 20px 20px 20px;
+        border: 2px solid var(--secondary-text-color);
+        padding: 27px;
         text-align: center;
         cursor: pointer;
-        --mdc-theme-on-primary: currentColor;
-        --mdc-theme-text-disabled-on-light: var(--disabled-text-color);
+        background-color: var(--card-background-color);
+        font-size: 1rem;
+        display: flex;
+        justify-content: center;
+        color: var(--primary-text-color);
+      }
+      @media only screen and (max-width: 500px) {
+        button {
+          padding: 20px;
+          display: table-cell;
+          vertical-align: middle;
+          width: 34vw;
+          border-radius: 25px;
+          border: 2px solid var(--secondary-text-color);
+          cursor: pointer;
+          background-color: var(--card-background-color);
+          font-size: 1rem;
+          white-space: nowrap;
+        }
       }
     `;
   }

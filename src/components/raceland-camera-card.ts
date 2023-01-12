@@ -95,8 +95,28 @@ export class racelandCameraCard extends LitElement {
           height: 60%;
         }
         .card-title {
-          display: flex;
+          font-size: 1.1rem;
+          width: 135px;
+          font-weight: bold;
+          white-space: nowrap;
+          display: inline-block;
+          overflow: hidden;
+          text-overflow: ellipsis;
           justify-content: space-between;
+        }
+
+        @media only screen and (max-width: 500px) {
+          .card-title {
+            font-size: 1.2rem;
+            width: 137px;
+            overflow: hidden;
+            font-weight: bold;
+            white-space: nowrap;
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            justify-content: space-between;
+          }
         }
         .card-content {
           width: 100%;
