@@ -137,7 +137,6 @@ export class HuiDeleteDialogCamera
     if (ev) {
       ev.stopPropagation();
     }
-    console.log("config", this.cameraConfiguration);
     const result = await removeCamera(
       this.hass,
       this.cameraConfiguration?.unique_id,

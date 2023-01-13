@@ -90,11 +90,9 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
       },
     };
     this._params = params;
-    console.log("params", this._params);
     this.schema = form_schema;
     this.dialogOpen = true;
     this.cameraInfo = this._params.cameraInfo;
-    console.log("camera-info", this.cameraInfo);
     this.registeredCameras = getCameraEntities(this.hass.states).map(
       (camera: cameraCard) => camera.name
     );
@@ -199,10 +197,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
   private async _accept() {
     const valid = this.validInput();
     if (valid === true) {
-      // const camInfo = this.removeNull(this.cameraInfo);
-      console.log("info_camera", this.cameraInfo);
       const result = await updateCameraInformation(this.hass, this.cameraInfo);
-      console.log("RESULTA", result);
       if (result === true) {
         this.closeDialog();
         fireEvent(this, "update-camera-dashboard");

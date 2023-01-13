@@ -102,7 +102,6 @@ export class HuiCreateDialogCameraFormulary
     this.registeredCameras = getCameraEntities(this.hass.states).map(
       (camera: cameraCard) => camera.name
     );
-    console.log("data", this.data);
   }
 
   public closeDialog(): boolean {
@@ -118,7 +117,6 @@ export class HuiCreateDialogCameraFormulary
     }
     const schemaBody = this.schema.body;
     const schemaExtraOptions = this.schema.extra_options;
-    console.log("advanced options", schemaBody);
     return html`
       <ha-dialog
         open

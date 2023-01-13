@@ -263,7 +263,6 @@ class cameraFrontend extends cameraDashboardElement {
   private _handleSearchChange(ev: CustomEvent) {
     //Check hui-card-picker if more information is required
     this._filter = ev.detail.value;
-    console.log("filter", this._filter);
   }
 
   private _addCamera() {

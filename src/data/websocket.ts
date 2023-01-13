@@ -25,24 +25,19 @@ export const sendCameraInformation = async (hass: HomeAssistant, cameraInfo): Pr
 };
 
 export const updateCameraInformation = async (hass: HomeAssistant, cameraInfo): Promise<any> => {
-  console.log("cheguei", cameraInfo);
   const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
     type: "raceland-camera-dashboard/edit_camera",
     ...cameraInfo,
   });
-  console.log("respostsa", response);
   return response;
 };
 
 export const removeCamera = async (hass: HomeAssistant, id, entityID) => {
-  console.log("response começopu", id, entityID);
-
   const response = await hass.connection.sendMessagePromise<boolean>({
     type: "raceland-camera-dashboard/remove_camera",
     entityID: entityID,
     unique_id: id,
   });
-  console.log("response acabou");
   return response;
 };
 
