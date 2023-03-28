@@ -3,7 +3,7 @@ import "@material/mwc-list/mwc-list-item";
 import { ActionDetail } from "@material/mwc-list/mwc-list-foundation";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators";
-import { mdiDotsVertical, mdiDelete } from "@mdi/js";
+import { mdiDotsVertical, mdiDelete, mdiPencil } from "@mdi/js";
 import { localize } from "../localize/localize";
 import "../../frontend-release/src/components/ha-button-menu";
 import "../../frontend-release/src/components/ha-icon-button";
@@ -20,8 +20,10 @@ export class cameraButtonMenu extends LitElement {
     return html`
       <ha-button-menu corner="BOTTOM_LEFT" @action=${this._handleAction}>
         <ha-icon-button slot="trigger" .path=${mdiDotsVertical}></ha-icon-button>
-        <mwc-list-item>${localize("common.edit")}</mwc-list-item>
-        <div class="line"></div>
+        <mwc-list-item
+          ><ha-svg-icon .path=${mdiPencil}></ha-svg-icon>${localize("common.edit")}</mwc-list-item
+        >
+        <!-- <div class="line"></div> -->
         <mwc-list-item class="delete-item"
           ><ha-svg-icon .path=${mdiDelete}></ha-svg-icon>${localize("common.delete")}</mwc-list-item
         >
@@ -51,7 +53,7 @@ export class cameraButtonMenu extends LitElement {
         color: var(--disabled-text-color);
       }
       mwc-list-item {
-        font-family: "Roboto";
+        /* font-family: "Roboto"; */
         font-style: normal;
         font-weight: 400;
         text-align: center;
@@ -65,6 +67,9 @@ export class cameraButtonMenu extends LitElement {
         position: absolute;
         border-top: 1px solid #7b7b7b;
         transform: matrix(1, 0.01, -0.01, 1, 0, 0);
+      }
+      ha-svg-icon {
+        margin-right: 10px;
       }
     `;
   }

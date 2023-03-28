@@ -28,7 +28,12 @@ export class CameraBrandIconButton extends LitElement {
         .disabled=${this.disabled}
       >
         ${this.svgPath
-          ? html`<img src=${this.svgPath} alt="Brand Icon" />`
+          ? html`<img
+              loading="lazy"
+              referrerpolicy="no-referrer"
+              src=${this.svgPath}
+              alt="Brand Icon"
+            />`
           : html`${this.hideTitle ? "" : this.label}`}
       </mwc-icon-button>
     `;
@@ -43,12 +48,16 @@ export class CameraBrandIconButton extends LitElement {
       :host([disabled]) {
         pointer-events: none;
       }
+      img {
+        width: 8rem;
+      }
       mwc-icon-button {
         width: 100%;
         border-radius: 25px;
-        border: 2px solid #73ad21;
+        border: 2px solid var(--secondary-text-color);
         padding: 20px 20px 20px 20px;
         text-align: center;
+        background-color: white;
         cursor: pointer;
         --mdc-theme-on-primary: currentColor;
         --mdc-theme-text-disabled-on-light: var(--disabled-text-color);

@@ -1,4 +1,4 @@
-import { mdiPlus } from "@mdi/js";
+import { mdiDotsVertical, mdiMagnify, mdiPlus } from "@mdi/js";
 import { html, PropertyValues, TemplateResult, css } from "lit";
 import { customElement, property, state } from "lit/decorators";
 import memoizeOne from "memoize-one";
@@ -21,6 +21,8 @@ import { getCameraEntities } from "./common";
 import "./components/raceland-camera-card";
 import "./components/new-camera-card";
 import { cameraDashboardElement } from "./hacs";
+import "@polymer/app-layout/app-header/app-header";
+import "../frontend-release/src/layouts/ha-app-layout";
 import {
   cameraInfo,
   cameraCard,
@@ -29,7 +31,11 @@ import {
   schemaForm,
   CameraConfiguration,
 } from "./data/types";
-import { fetchCameraDatabase } from "./data/websocket";
+import { fetchCameraDatabase, fetchCameraInformation, fetchCameraList } from "./data/websocket";
+import "@polymer/app-layout/app-toolbar/app-toolbar";
+import "../frontend-release/src/components/ha-icon-button-arrow-prev";
+import { showQuickBar } from "../frontend-release/src/dialogs/quick-bar/show-dialog-quick-bar";
+import { classMap } from "lit/directives/class-map";
 
 declare global {
   // for fire event
@@ -61,7 +67,15 @@ class cameraFrontend extends cameraDashboardElement {
 
   @property({ attribute: false }) public registeredCameras!: any;
 
+  @property({ attribute: false }) public newCameras!: any;
+
   @property({ attribute: false }) public cameraDatabase: any;
+
+  @property({ attribute: false }) public cameraInfo!: cameraInfo;
+
+  @property({ attribute: false }) public cameraList!: any;
+
+  @state() private ids: any;
 
   @state() private _filter = "";
 
@@ -71,7 +85,9 @@ class cameraFrontend extends cameraDashboardElement {
 
   protected async firstUpdated(changedProps) {
     super.firstUpdated(changedProps);
+
     this.cameraDatabase = await fetchCameraDatabase(this.hass);
+    this.cameraList = await fetchCameraList(this.hass);
 
     this._applyTheme();
 
@@ -137,8 +153,9 @@ class cameraFrontend extends cameraDashboardElement {
     }
   }
 
-  protected _updateCameraDashboard() {
+  protected async _updateCameraDashboard() {
     this.registeredCameras = getCameraEntities(this.hass.states);
+    this.cameraList = await fetchCameraList(this.hass);
   }
 
   private _filterCameras = memoizeOne((cameras, filter?: string) => {
@@ -158,6 +175,7 @@ class cameraFrontend extends cameraDashboardElement {
   });
 
   protected render(): TemplateResult | void {
+    this._showQuickBar();
     if (!this.hass || !this.racelandDashoardData) {
       return html``;
     }
@@ -166,36 +184,80 @@ class cameraFrontend extends cameraDashboardElement {
       this.registeredCameras = getCameraEntities(this.hass.states);
     }
 
-    const filteredCameras = this._filterCameras(this.registeredCameras, this._filter);
+    if (this.registeredCameras && this.cameraList) {
+      for (let i = 0; i < this.registeredCameras.length; i++) {
+        for (let j = 0; j < this.cameraList.length; j++) {
+          if (this.registeredCameras[i].name == this.cameraList[j].name) {
+            this.cameraList[j].entityID = this.registeredCameras[i].entityID;
+          }
+        }
+      }
+    }
+    const filteredCameras = this._filterCameras(this.cameraList, this._filter);
 
     return html`
-      <search-input
-        .hass=${this.hass}
-        .filter=${this._filter}
-        @value-changed=${this._handleSearchChange}
-        .label=${localize("search.cameras")}
-      ></search-input>
+      ${window.screen.width <= 900
+        ? html`
+            <div id="header">
+              <app-header fixed slot="header">
+                <app-toolbar>
+                  <ha-menu-button .hass=${this.hass} .narrow=${this.narrow}></ha-menu-button>
+                </app-toolbar>
+              </app-header>
+              <search-input
+                .hass=${this.hass}
+                .filter=${this._filter}
+                @value-changed=${this._handleSearchChange}
+                .label=${localize("search.cameras")}
+              ></search-input>
+            </div>
+          `
+        : html`
+            <search-input
+              .hass=${this.hass}
+              .filter=${this._filter}
+              @value-changed=${this._handleSearchChange}
+              .label=${localize("search.cameras")}
+            ></search-input>
+          `}
       <div class="sep"></div>
-
-      <div class="camera-list">
-        ${filteredCameras.length === 0
-          ? html`<new-camera-card .hass=${this.hass} .narrow=${this.narrow}> </new-camera-card>`
-          : filteredCameras.map(
-              (cam_info: cameraInfo) =>
-                html` <raceland-camera-card
-                  .hass=${this.hass}
-                  .narrow=${this.narrow}
-                  .record=${false}
-                  .cameraInfo=${cam_info}
-                ></raceland-camera-card>`
-            )}
+      <div class="content">
+        <div class="contentFather">
+          <div
+            class=${classMap({
+              "camera-list": filteredCameras?.length !== 0,
+              "camera-list-one": filteredCameras?.length === 0,
+            })}
+          >
+            ${filteredCameras?.length === 0
+              ? html`<new-camera-card .hass=${this.hass} .narrow=${this.narrow}> </new-camera-card>`
+              : filteredCameras?.map(
+                  (cam_info: any) =>
+                    html`
+                      <raceland-camera-card
+                        .hass=${this.hass}
+                        .narrow=${this.narrow}
+                        .record=${false}
+                        .cameraInfo=${cam_info}
+                      ></raceland-camera-card>
+                    `
+                )}
+          </div>
+        </div>
       </div>
-      ${filteredCameras.length === 0
+      ${filteredCameras?.length === 0
         ? html``
         : html`<ha-fab .label=${localize("common.camera")} extended @click=${this._addCamera} })}>
             <ha-svg-icon slot="icon" .path=${mdiPlus}></ha-svg-icon>
           </ha-fab>`}
     `;
+  }
+
+  private _showQuickBar(): void {
+    showQuickBar(this, {
+      commandMode: true,
+      hint: this.hass.localize("ui.dialogs.quick-bar.key_c_hint"),
+    });
   }
 
   private _handleSearchChange(ev: CustomEvent) {
@@ -209,34 +271,116 @@ class cameraFrontend extends cameraDashboardElement {
 
   static get styles() {
     return css`
-      .camera-list {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-gap: 1%;
-      }
-      .sep {
-        padding-top: 2%;
-      }
-      search-input {
-        display: block;
-        --mdc-shape-small: var(--card-picker-search-shape);
-        margin: var(--card-picker-search-margin);
-      }
       raceland-camera-card {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        height: 80%;
         width: 100%;
         border-style: solid;
         border-width: min(var(--ha-card-border-width, 1px), 10px);
         border-color: transparent;
         border-radius: var(--ha-card-border-radius, 4px);
       }
+      .camera-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-auto-rows: 160px;
+      }
+      search-input {
+        display: block;
+        --mdc-shape-small: var(--card-picker-search-shape);
+        margin: var(--card-picker-search-margin);
+        height: 55px;
+        width: 100%;
+      }
+      new-camera-card {
+        background-color: var(--card-background-color, white);
+        box-shadow: var(
+          --mdc-fab-box-shadow,
+          0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+          0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+          0px 1px 18px 0px rgba(0, 0, 0, 0.12)
+        );
+        font-family: Arial;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        font-size: 2.3rem;
+        height: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        font-weight: 550;
+        max-width: 400px;
+      }
+      ha-menu-button {
+        color: var(--primary-text-color);
+      }
+      .camera-list-one {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+      /* @media only screen and (max-width: 1200px) {
+        search-input {
+          width: 100%;
+          height: 55px;
+        }
+      } */
+      @media only screen and (max-width: 900px) {
+        .camera-list {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
+          grid-auto-rows: 130px;
+          row-gap: 3%;
+          margin-bottom: 15%;
+          margin-right: 3px;
+        }
+        #header {
+          display: flex;
+          background-color: var(--card-background-color);
+          height: 55px;
+        }
+        app-toolbar {
+          padding: 0 12px;
+        }
+        search-input {
+          width: 100%;
+          height: 55px;
+        }
+        raceland-camera-card {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          width: 100%;
+          border-style: solid;
+          border-width: min(var(--ha-card-border-width, 1px), 10px);
+          border-color: transparent;
+          border-radius: var(--ha-card-border-radius, 4px);
+        }
+      }
+
+      ha-quick-bar {
+        display: none;
+      }
+      .sep {
+        padding-top: 2%;
+      }
+      .content {
+        width: 99.5%;
+        height: 720px;
+      }
       ha-fab {
-        position: sticky;
+        position: fixed;
         float: right;
         right: calc(16px + env(safe-area-inset-right));
-        bottom: calc(20px + env(safe-area-inset-bottom));
+        bottom: calc(16px + env(safe-area-inset-bottom));
         z-index: 1;
       }
     `;

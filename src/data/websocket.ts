@@ -35,7 +35,7 @@ export const updateCameraInformation = async (hass: HomeAssistant, cameraInfo): 
 export const removeCamera = async (hass: HomeAssistant, id, entityID) => {
   const response = await hass.connection.sendMessagePromise<boolean>({
     type: "raceland-camera-dashboard/remove_camera",
-    entity_id: entityID,
+    entityID: entityID,
     unique_id: id,
   });
   return response;
@@ -46,5 +46,13 @@ export const fetchCameraInformation = async (hass: HomeAssistant, cameraEntityID
     type: "raceland-camera-dashboard/fetch_camera_information",
     entity_id: cameraEntityID,
   });
+  return response;
+};
+
+export const fetchCameraList = async (hass: HomeAssistant) => {
+  const response = await hass.connection.sendMessagePromise<CameraConfiguration>({
+    type: "raceland-camera-dashboard/fetch_camera_list",
+  });
+
   return response;
 };

@@ -1,7 +1,7 @@
 import "@material/mwc-tab-bar/mwc-tab-bar";
 import "@material/mwc-tab/mwc-tab";
 import "@material/mwc-button/mwc-button";
-import { mdiClose } from "@mdi/js";
+import { mdiClose, mdiPencil } from "@mdi/js";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map";
 import { customElement, property, state } from "lit/decorators";
@@ -20,6 +20,45 @@ import { getCameraEntities, removeTrailingSpacesInput } from "../../common";
 import { backEventOptions, schemaForm, cameraCard, cameraInfo } from "../../data/types";
 import "../camera-brand-icon-button";
 import "../search-input-round";
+
+export const haStyleDialog = css`
+  /* mwc-dialog (ha-dialog) styles */
+  ha-dialog {
+    --mdc-dialog-min-width: 400px;
+    --mdc-dialog-max-width: 600px;
+    --mdc-dialog-heading-ink-color: var(--primary-text-color);
+    --mdc-dialog-content-ink-color: var(--primary-text-color);
+    --justify-action-buttons: space-between;
+    --mdc-switch__pointer_events: auto;
+  }
+
+  ha-dialog .form {
+    padding-bottom: 24px;
+    color: var(--primary-text-color);
+  }
+
+  a {
+    color: var(--accent-color) !important;
+  }
+
+  /* make dialog fullscreen on small screens */
+  @media all and (max-width: 450px), all and (max-height: 500px) {
+    ha-dialog {
+      --mdc-dialog-min-width: calc(100vw - env(safe-area-inset-right) - env(safe-area-inset-left));
+      --mdc-dialog-max-width: calc(100vw - env(safe-area-inset-right) - env(safe-area-inset-left));
+      --mdc-dialog-min-height: 100%;
+      --mdc-dialog-max-height: 100%;
+      --vertial-align-dialog: flex-end;
+      --ha-dialog-border-radius: 0px;
+    }
+  }
+  mwc-button.warning {
+    --mdc-theme-primary: var(--error-color);
+  }
+  .error {
+    color: var(--error-color);
+  }
+`;
 
 @customElement("edit-camera-dialog")
 export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCameraDialogParams> {
@@ -53,7 +92,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
     this._params = params;
     this.schema = form_schema;
     this.dialogOpen = true;
-    this.cameraInfo = await fetchCameraInformation(this.hass, this._params.cameraInfo.entityID);
+    this.cameraInfo = this._params.cameraInfo;
     this.registeredCameras = getCameraEntities(this.hass.states).map(
       (camera: cameraCard) => camera.name
     );
@@ -94,26 +133,33 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
       @closed=${this.closeDialog}
     >
       <div class="cancel">
-        <ha-svg-icon
-          dialogAction="close"
-          class="cancel-icon"
-          slot="icon"
-          .path=${mdiClose}
-        ></ha-svg-icon>
+        <div slot="heading" class="heading">
+          <ha-header-bar id="bar">
+            <div slot="title" class="main-title" .title=${name}>
+              ${localize("common.edit_camera")}
+            </div>
+            <ha-icon-button
+              slot="navigationIcon"
+              dialogAction="cancel"
+              .label=${this.hass!.localize("ui.dialogs.more_info_control.dismiss")}
+              id="cancel"
+              .path=${"M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"}
+            ></ha-icon-button>
+          </ha-header-bar>
+        </div>
       </div>
-      <div class="header-text">${localize("common.edit_camera")}</div>
-      </div>
-      ${this.validIssue ? html` <div class="form-issue">${this.validIssue}</div>` : html``}
-      <div class="form">
-      <ha-form
-            .hass=${this.hass}
-            .data=${this.cameraInfo}
-            .schema=${schemaBody}
-            .computeLabel=${this._computeLabelCallback}
-            @value-changed=${this._valueChanged}
-          ></ha-form>
-          ${
-            schemaExtraOptions && this.cameraInfo.advanced_options
+      <div class="content">
+        <div class="contentFather">
+          ${this.validIssue ? html` <div class="form-issue">${this.validIssue}</div>` : html``}
+          <div class="form">
+            <ha-form
+              .hass=${this.hass}
+              .data=${this.cameraInfo}
+              .schema=${schemaBody}
+              .computeLabel=${this._computeLabelCallback}
+              @value-changed=${this._valueChanged}
+            ></ha-form>
+            ${schemaExtraOptions && this.cameraInfo.advanced_options
               ? html` <ha-form
                   .hass=${this.hass}
                   .data=${this.cameraInfo}
@@ -121,14 +167,21 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
                   .computeLabel=${this._computeLabelCallback}
                   @value-changed=${this._valueChanged}
                 ></ha-form>`
-              : html``
-          }
+              : html``}
+          </div>
         </div>
-        <div class="options">
-          <mwc-button class="button-confirm" @click=${this._accept}
-            >${this.schema.footer.accept}</mwc-button
-          >
-        </div>
+      </div>
+      <div class="options">
+        <ha-fab
+          class="button-confirm"
+          .label=${this.schema.footer.accept}
+          extended
+          @click=${this._accept}
+          })}
+        >
+          <ha-svg-icon slot="icon" .path=${mdiPencil}></ha-svg-icon>
+        </ha-fab>
+      </div>
     </ha-dialog>`;
   }
 
@@ -144,8 +197,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
   private async _accept() {
     const valid = this.validInput();
     if (valid === true) {
-      const camInfo = this.removeNull(this.cameraInfo);
-      const result = await updateCameraInformation(this.hass, camInfo);
+      const result = await updateCameraInformation(this.hass, this.cameraInfo);
       if (result === true) {
         this.closeDialog();
         fireEvent(this, "update-camera-dashboard");
@@ -173,18 +225,19 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
     return true;
   }
 
-  private removeNull(cameraInfo): cameraInfo {
-    //Remove null keys in the dictionary (ensuring the data passes the checks in the backend. This is not the most elegant solution but it should work for now)
-    for (const [key, value] of Object.entries(cameraInfo)) {
-      if (value === null) {
-        delete cameraInfo[key];
-      }
-    }
-    return cameraInfo;
-  }
+  // private removeNull(cameraInfo): cameraInfo {
+  //   //Remove null keys in the dictionary (ensuring the data passes the checks in the backend. This is not the most elegant solution but it should work for now)
+  //   for (const [key, value] of Object.entries(cameraInfo)) {
+  //     if (value === null) {
+  //       delete cameraInfo[key];
+  //     }
+  //   }
+  //   return cameraInfo;
+  // }
 
   static get styles(): CSSResultGroup {
     return [
+      haStyleDialog,
       css`
         @media all and (max-width: 450px), all and (max-height: 500px) {
           /* overrule the ha-style-dialog max-height on small screens */
@@ -204,6 +257,15 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           hui-entity-picker-table {
             height: calc(100vh - 158px);
           }
+        }
+
+        .cancel {
+          cursor: pointer;
+          /* padding: 20px 20px 20px 20px; */
+          width: 100%;
+        }
+        .content {
+          width: 100%;
         }
 
         ha-dialog {
@@ -232,7 +294,7 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
         }
 
         .button-confirm {
-          background-color: #4ba2ff;
+          /* background-color: #4ba2ff; */
           float: right;
         }
 
@@ -240,6 +302,10 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           --mdc-theme-primary: #7b7b7b;
           float: left;
           margin-left: 5%;
+        }
+        .options {
+          width: 100%;
+          margin-bottom: 20px;
         }
 
         .form-issue {
@@ -276,13 +342,8 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
         .brand-list {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
-          grid-gap: 10%;
-          padding: 0px 60px 30px 60px;
-        }
-
-        .cancel {
-          cursor: pointer;
-          padding: 20px 20px 20px 20px;
+          grid-gap: 9%;
+          padding: 0px 55px 25px;
         }
 
         mwc-button {
@@ -311,6 +372,12 @@ export class HuiEditDialogCamera extends LitElement implements HassDialog<EditCa
           float: right;
           width: 40px;
           height: 40px;
+        }
+        @media only screen and (max-width: 500px) {
+          .content {
+            width: 100%;
+            height: 171vw;
+          }
         }
       `,
     ];

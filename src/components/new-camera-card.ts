@@ -106,14 +106,14 @@ export class newCameraCard extends LitElement {
           position: relative;
           overflow: hidden;
           border-radius: 1.5rem;
-          font-weight: 450;
+          font-weight: 550;
         }
         #text {
           text-align: center;
           margin-top: 10%;
           width: 60%;
           font-size: 2rem;
-          font-weight: 450;
+          font-weight: 550;
         }
         .add-new-camera:hover > #icon {
           background-color: var(--sidebar-selected-icon-color);
