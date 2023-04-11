@@ -1,16 +1,11 @@
-import { mdiDotsVertical, mdiMagnify, mdiPlus } from "@mdi/js";
+import "@polymer/app-layout/app-header/app-header";
+import "@polymer/app-layout/app-toolbar/app-toolbar";
+import { mdiPlus } from "@mdi/js";
 import { html, PropertyValues, TemplateResult, css } from "lit";
+import { classMap } from "lit/directives/class-map";
 import { customElement, property, state } from "lit/decorators";
 import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
-import "../frontend-release/src/resources/ha-style";
-import "../frontend-release/src/components/search-input";
-import "../frontend-release/src/components/ha-fab";
-import { showDialog } from "../frontend-release/src/dialogs/make-dialog-manager";
-import { applyThemesOnElement } from "../frontend-release/src/common/dom/apply_themes_on_element";
-import { fireEvent } from "../frontend-release/src/common/dom/fire_event";
-import { makeDialogManager } from "../frontend-release/src/dialogs/make-dialog-manager";
-import { HomeAssistant, Route } from "../frontend-release/src/types";
 import { showCreateCameraDialog } from "./helpers/show-create-camera-dialog";
 import { showDeleteCameraDialog } from "./helpers/show-delete-camera-dialog";
 import { showEditCameraDialog } from "./helpers/show-edit-camera-dialog";
@@ -21,8 +16,16 @@ import { getCameraEntities } from "./common";
 import "./components/raceland-camera-card";
 import "./components/new-camera-card";
 import { cameraDashboardElement } from "./hacs";
-import "@polymer/app-layout/app-header/app-header";
-import "../frontend-release/src/layouts/ha-app-layout";
+import "../frontend-release/layouts/ha-app-layout"; //TODO: Remove; Required?
+import "../frontend-release/resources/ha-style"; //TODO: Remove; Required?
+import "../frontend-release/components/search-input";
+import "../frontend-release/components/ha-fab";
+import { showDialog } from "../frontend-release/dialogs/make-dialog-manager";
+import { showQuickBar } from "../frontend-release/dialogs/quick-bar/show-dialog-quick-bar";
+import { applyThemesOnElement } from "../frontend-release/common/dom/apply_themes_on_element";
+import { makeDialogManager } from "../frontend-release/dialogs/make-dialog-manager";
+import { HomeAssistant, Route } from "../frontend-release/types";
+import { fireEvent } from "../frontend-release/common/dom/fire_event";
 import {
   cameraInfo,
   cameraCard,
@@ -31,11 +34,7 @@ import {
   schemaForm,
   CameraConfiguration,
 } from "./data/types";
-import { fetchCameraDatabase, fetchCameraInformation, fetchCameraList } from "./data/websocket";
-import "@polymer/app-layout/app-toolbar/app-toolbar";
-import "../frontend-release/src/components/ha-icon-button-arrow-prev";
-import { showQuickBar } from "../frontend-release/src/dialogs/quick-bar/show-dialog-quick-bar";
-import { classMap } from "lit/directives/class-map";
+import { fetchCameraDatabase, fetchCameraList } from "./data/websocket";
 
 declare global {
   // for fire event
@@ -138,7 +137,7 @@ class cameraFrontend extends cameraDashboardElement {
       {
         entityId: ev.detail.entityId,
       },
-      () => import("../frontend-release/src/dialogs/more-info/ha-more-info-dialog")
+      () => import("../frontend-release/dialogs/more-info/ha-more-info-dialog")
     );
   }
 

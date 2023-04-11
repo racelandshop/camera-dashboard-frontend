@@ -1,4 +1,4 @@
-import type { HaFormSchema } from "../../frontend-release/src/components/ha-form/types";
+import type { HaFormSchema } from "../../frontend-release/components/ha-form/types";
 
 export interface cameraInfo {
   name: string;

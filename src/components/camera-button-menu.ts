@@ -2,13 +2,13 @@ import "@material/mwc-menu";
 import "@material/mwc-list/mwc-list-item";
 import { ActionDetail } from "@material/mwc-list/mwc-list-foundation";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
-import { customElement, property, query } from "lit/decorators";
+import { customElement, property } from "lit/decorators";
 import { mdiDotsVertical, mdiDelete, mdiPencil } from "@mdi/js";
 import { localize } from "../localize/localize";
-import "../../frontend-release/src/components/ha-button-menu";
-import "../../frontend-release/src/components/ha-icon-button";
-import { HomeAssistant } from "../../frontend-release/src/types";
-import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
+import "../../frontend-release/components/ha-button-menu";
+import "../../frontend-release/components/ha-icon-button";
+import { HomeAssistant } from "../../frontend-release/types";
+import { fireEvent } from "../../frontend-release/common/dom/fire_event";
 
 @customElement("camera-button-menu")
 export class cameraButtonMenu extends LitElement {

@@ -1,4 +1,4 @@
-import { HomeAssistant } from "../../frontend-release/src/types";
+import { HomeAssistant } from "../../frontend-release/types";
 import { CameraConfiguration } from "./types";
 
 export const fetchCameraDatabase = async (hass: HomeAssistant): Promise<any> => {

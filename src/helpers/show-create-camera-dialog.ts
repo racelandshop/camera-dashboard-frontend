@@ -1,4 +1,4 @@
-import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
+import { fireEvent } from "../../frontend-release/common/dom/fire_event";
 
 export interface CreateCameraDialogParams {
   database?: any;

@@ -1,4 +1,3 @@
-import { boolean } from "superstruct";
 import { cameraInfo } from "./data/types";
 
 export function getCameraEntities(states) {

@@ -1,4 +1,4 @@
-import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
+import { fireEvent } from "../../frontend-release/common/dom/fire_event";
 import { cameraModel } from "../data/types";
 import type { backEventOptions, schemaForm } from "../data/types";
 

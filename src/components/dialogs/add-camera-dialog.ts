@@ -1,16 +1,14 @@
-import "@material/mwc-tab/mwc-tab";
+import "@material/mwc-tab/mwc-tab"; //TODO: Required?
 import "@material/mwc-button/mwc-button";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
-import { mdiClose, mdiPlus } from "@mdi/js";
+import { mdiPlus } from "@mdi/js";
 import { classMap } from "lit/directives/class-map";
 import memoizeOne from "memoize-one";
 import Fuse from "fuse.js";
-import type { HassDialog } from "../../../frontend-release/src/dialogs/make-dialog-manager";
-import { fireEvent } from "../../../frontend-release/src/common/dom/fire_event";
-import type { HomeAssistant } from "../../../frontend-release/src/types";
-import "../../../frontend-release/src/components/ha-dialog";
-import "../../../frontend-release/src/components/ha-header-bar";
+import type { HassDialog } from "../../../frontend-release/dialogs/make-dialog-manager";
+import { fireEvent } from "../../../frontend-release/common/dom/fire_event";
+import type { HomeAssistant } from "../../../frontend-release/types";
 import { CreateCameraDialogParams } from "../../helpers/show-create-camera-dialog";
 import { customSchema, customCameraExtraOptionSchema } from "../../schemas";
 import { cameraBrand, cameraModel } from "../../data/types";
@@ -18,8 +16,10 @@ import { localize } from "../../localize/localize";
 import { defaultIntegration } from "../../common";
 import "../camera-brand-icon-button";
 import "../search-input-round";
-import "../../../frontend-release/src/components/search-input";
-import "../../../frontend-release/src/components/ha-fab";
+import "../../../frontend-release/components/search-input";
+import "../../../frontend-release/components/ha-fab";
+import "../../../frontend-release/components/ha-dialog";
+import "../../../frontend-release/components/ha-header-bar";
 
 export const haStyleDialog = css`
   /* mwc-dialog (ha-dialog) styles */

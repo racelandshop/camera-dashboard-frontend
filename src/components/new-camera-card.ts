@@ -5,13 +5,13 @@ import { mdiPlus } from "@mdi/js";
 import type { Ripple } from "@material/mwc-ripple";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state, queryAsync, eventOptions } from "lit/decorators";
-import { fireEvent } from "../../frontend-release/src/common/dom/fire_event";
-import "../../frontend-release/src/components/ha-card";
-import "../../frontend-release/src/components/ha-chip";
-import "../../frontend-release/src/components/ha-icon";
-import "../../frontend-release/src/components/ha-svg-icon";
+import { fireEvent } from "../../frontend-release/common/dom/fire_event";
+import "../../frontend-release/components/ha-card";
+import "../../frontend-release/components/ha-chip";
+import "../../frontend-release/components/ha-icon";
+import "../../frontend-release/components/ha-svg-icon";
 import "./camera-button-menu";
-import { HomeAssistant } from "../../frontend-release/src/types";
+import { HomeAssistant } from "../../frontend-release/types";
 import { localize } from "../localize/localize";
 
 @customElement("new-camera-card")
